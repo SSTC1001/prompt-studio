@@ -121,6 +121,7 @@ pre{white-space:pre-wrap;background:#1b1a17;color:#f3efe6;border-radius:14px;pad
 #vmini{position:fixed;right:14px;bottom:84px;width:48px;height:48px;border-radius:50%;border:none;background:var(--acc);color:#fff;font-size:20px;box-shadow:0 6px 18px rgba(0,0,0,.2);z-index:55;cursor:pointer}
 .mtest{width:100%;margin:-6px 0 8px;padding:10px;border:1.5px dashed var(--line);border-radius:12px;background:none;color:var(--mute);font:600 14px 'DM Sans',system-ui,sans-serif;cursor:pointer}
 .mres{font-size:13.5px;margin:0 0 12px;padding:0 4px}.mres:empty{display:none}.mres.ok{color:#1f7a3f}.mres.bad{color:#b3261e}
+#vgate{position:fixed;inset:0;z-index:80;background:rgba(20,18,15,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}#vgate button{width:min(100%,420px);padding:22px;border:0;border-radius:20px;background:var(--acc);color:#fff;font:700 20px 'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;gap:6px;cursor:pointer}#vgate small{font-weight:500;font-size:13.5px;opacity:.9}#vgate a{color:#fff;text-decoration:underline;font-size:15px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -479,7 +480,7 @@ const steps=()=>{const a=allSteps();if(S.mode!=="hizli")return a;
  return [QC.st[0],"IMG","SKILL"]};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,cat:S.cat,i:S.i,v:S.v,links:S.links,ch:Object.fromEntries(Object.entries(S.ch).map(([k,v])=>[k,[...v]])),skills:[...S.skills]}))}catch(e){}}
+function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,cat:S.cat,i:S.i,v:S.v,anlat:S.anlat||"",links:S.links,ch:Object.fromEntries(Object.entries(S.ch).map(([k,v])=>[k,[...v]])),skills:[...S.skills]}))}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem("pa_state")||"null")}catch(e){return null}}
 function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  $("#nav").classList.add("hide");$("#restart").classList.add("hide");
@@ -492,7 +493,7 @@ function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  const c=app.querySelector(".cats");
  Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat";
   const pc=S.cat;S.cat=k;const n=steps().length;S.cat=pc;b.innerHTML=`<span class="ic">${v.i}</span><span class="nm">${v.n}</span><span class="ct">${n} adım</span>`;
-  b.onclick=()=>{S.cat=k;S.i=0;S.v={};S.ch={};S.skills=new Set(v.skills.slice(0,3));show()};c.appendChild(b)});
+  b.onclick=()=>{S.cat=k;S.i=0;S.v={};S.ch={};S.anlat="";S.skills=new Set(v.skills.slice(0,3));show()};c.appendChild(b)});
 }
 function field(q,key){
  const w=document.createElement("div");w.className="q";
@@ -578,7 +579,7 @@ const KABUL={
  diger:["Brief'teki her MUTLAKA maddesi karşılanmış."]
 };
 function build(){
- const k=S.cat,c=CATS[k];let filled=0;const brief=[],ref=[],sk=[];
+ const k=S.cat,c=CATS[k];let filled=S.anlat?1:0;const brief=[],ref=[],sk=[];
  steps().forEach(st=>{
   if(st==="IMG"){const im=S.images.map((x,i)=>`- Görsel ${i+1} → ${x.role}${x.note?": "+x.note:""}`);
    const ln=S.links.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>"- Link: "+s);
@@ -608,7 +609,7 @@ function build(){
  kural.push("- Eksik bilgi varsa durup sorma; makul bir varsayım yap ve teslimin sonunda varsayımları listele.");
  const kabul=[...(KABUL[k]||KABUL.diger),"Brief'teki her MUTLAKA maddesi karşılanmış, hiçbir OLMASIN maddesi yok.","Sonuç, aynı konuda Claude ile yapılmış sıradan bir işten ilk bakışta ayırt edilebiliyor."];
  const L=[];
- L.push("<brief>",...brief,"</brief>","");
+ L.push("<brief>",...(S.anlat?["### Benim anlatımım (sesle söyledim)",S.anlat,""]:[]),...brief,"</brief>","");
  if(ref.length)L.push("<referanslar>",...ref,"</referanslar>","");
  if(sk.length)L.push("<skilller>",...sk,"</skilller>","");
  L.push("<kurallar>",...kural,"</kurallar>","");
@@ -759,12 +760,14 @@ function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).repl
  if(P.mod)S.mode=/hızlı|hizli/.test(norm(P.mod))?"hizli":"detay";
  S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));
  const all=[];steps().forEach(st=>{if(Array.isArray(st))qsOf(st).forEach(q=>all.push({q,key:k+"|"+(q._t||st[0])+"|"+q.id}))});
- let n=0;Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc"].includes(id))return;
+ let n=0;S.anlat=P.anlat||"";if(S.anlat)n++;Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli"].includes(id))return;
   let hit=all.find(x=>norm(x.q.id)===id);
-  if(!hit&&id==="anlat")hit=all.find(x=>x.q.t==="textarea"||x.q.t==="text");
   if(hit&&apply(hit.q,hit.key,val)!=null)n++});
  history.replaceState(null,"",location.pathname);
- if(P.sonuc){S.i=steps().length}show();toast(n+" cevap Siri'den geldi ✓");return true}
+ if(P.sonuc){S.i=steps().length}show();toast(n+" cevap Siri'den geldi ✓");
+ if(P.sesli&&!P.sonuc){const o=document.createElement("div");o.id="vgate";o.innerHTML='<button>🎙️ Sesli devam et<small>'+esc(CATS[k].n)+' · kalan soruları sesli soracağım</small></button><a>Elle dolduracağım</a>';document.body.appendChild(o);
+  o.querySelector("button").onclick=()=>{o.remove();V.qi=0;vStart()};o.querySelector("a").onclick=()=>o.remove()}
+ return true}
 window.addEventListener("hashchange",fromHash);
 fromHash();
 
