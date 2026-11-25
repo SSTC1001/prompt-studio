@@ -516,7 +516,7 @@ function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  app.querySelectorAll(".mode button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;paint();home()});paint();
  const sv=load();if(sv&&sv.cat&&CATS[sv.cat]){const r=app.querySelector("#res");r.innerHTML=`<div class="resume"><span>${CATS[sv.cat].i} Yarım kalan: ${CATS[sv.cat].n}</span><button>Devam et</button></div>`;
   r.querySelector("button").onclick=()=>{S=Object.assign(S,sv,{ch:Object.fromEntries(Object.entries(sv.ch).map(([k,v])=>[k,new Set(v)])),skills:new Set(sv.skills),images:[]});show()}}
-$("#chatgo").onclick=()=>{hfStart().catch(e=>{app.insertAdjacentHTML("afterbegin",`<div class="warn">Sesli mod başlatılamadı: ${esc(e&&e.message||String(e))}</div>`)})};
+$("#chatgo").onclick=()=>{hfPrime();hfStart().catch(e=>{app.insertAdjacentHTML("afterbegin",`<div class="warn">Sesli mod başlatılamadı: ${esc(e&&e.message||String(e))}</div>`)})};
  const c=app.querySelector(".cats");
  Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat";
   const pc=S.cat;S.cat=k;const n=steps().length;S.cat=pc;b.innerHTML=`<span class="ic">${v.i}</span><span class="nm">${v.n}</span><span class="ct">${n} adım</span>`;
@@ -661,7 +661,7 @@ function build(){
  function emit(title,qs){const out=[];
   qs.forEach(q=>{const key=k+"|"+title+"|"+q.id;let v="";
    if(q.t==="chips"){const a=[...(S.ch[key]||[])];if(S.v[key+"_ek"])a.push(S.v[key+"_ek"]);v=a.join(", ")}
-   else if(q.t==="palette"){const p=PALETS.find(x=>x.n===S.v[key]);if(p)v=p.c?`${p.n} (${p.d}) → ${p.c.join(", ")}`:p.n}
+   else if(q.t==="palette"){const p=PALETS.find(x=>x.n===S.v[key]);if(p)v=p.c?`${p.n} (${p.d}) → ${p.c.join(", ")}`:p.n;else if(S.v[key])v=String(S.v[key])+" (kendi tarifim; uygun hex kodlarına sen çevir)"}
    else if(q.t==="scale"){const n=+S.v[key];if(n){const lab=["belirgin şekilde "+q.a,"biraz "+q.a,"tam ortada","biraz "+q.b,"belirgin şekilde "+q.b][n-1];v=`${n}/5 → ${lab}`}}
    else v=String(S.v[key]||"").trim();
    if(v){out.push(`- ${q.l.replace(/\?$/,"")}: ${v}`);filled++}});
@@ -672,25 +672,40 @@ function build(){
  if(gorselIs&&!has("estetik")&&!has("palet")){S.seed=S.seed||(Date.now()/1000|0);const sd=S.seed;
   const p=pick(YON.paket,sd),mc=metinCift(p.c),vur=p.c.filter(x=>x!==mc.z&&x!==mc.m);
   brief.push("### Bu iş için seçilen yön (rastgele atandı, buna sadık kal)","- Estetik: "+p.n,"- Palet (başka renk ekleme): "+p.c.join(", "),"- Zemin "+mc.z+", ana metin "+mc.m+" (kontrast "+mc.r.toFixed(1)+":1). Diğerleri ("+vur.join(", ")+") yalnızca vurgu ve büyük başlık; küçük yazıda kullanma.","- Font: "+p.f+" (Google Fonts, latin-ext alt kümesiyle)","- Atmosfer: "+p.at,"- İmza öğe (cesaret yalnızca burada, geri kalan sade): "+p.imza,"- İlham alınacak nesne: "+pick(YON.ilham,sd>>3),"")}
+ const palSec=Object.keys(S.v).filter(x=>x.endsWith("|palet")).map(x=>S.v[x])[0]||"";
+ const CAK={"Gece Mavisi":/lacivert|slate/,"Terracotta":/terracotta|krem/,"Neon Gece":/neon/};
+ const cakisma=CAK[palSec]?palSec:"";let tells=[...(TELL[k]||TELL.diger)];if(cakisma)tells=tells.filter(t=>!CAK[palSec].test(t));
  if(gorselIs)kural.push(
-  "- Açık uçlu tasarım işlerinde varsayılan bir 'ev stiline' kayma eğilimin var. Bunun yerine bu brief'e özgü bir kavramsal yön belirle ve işe başlamadan onu bir cümleyle yaz.",
   "- Tipografi: Inter, Roboto, Arial, Space Grotesk gibi her yerde görülen fontlar yerine karakterli bir font seç. Fontlar Türkçe karakterleri (ğ ş ı İ ç ö ü) tam desteklemeli; Google Fonts kullanıyorsan latin-ext alt kümesini yükle.",
   "- Renk: brief'te palet varsa hex kodlarına birebir uy. Yoksa paleti konunun kendi dünyasından türet, 2-4 renkle sınırla ve hex kodlarını baştan yaz. Metin/zemin kontrastı küçük yazıda en az 4.5:1, büyük başlıkta en az 3:1 olsun.",
-  "- Aşağıdakiler Claude çıktısını ilk bakışta ele veren kalıplar; hiçbirini kullanma: "+(TELL[k]||TELL.diger).join("; ")+".",
-  "- Brief'teki palet bu kalıplardan birine benziyorsa (ör. lacivert + amber), paleti kullanıcı seçtiği için koru; ama o kalıbın diğer işaretlerinden (yerleşim, tipografi, süsler) özellikle uzak dur ve renkleri beklenmedik oranlarda kullan.",
-  "- Başlamadan önce bu iş için akla gelen en bariz 5 çözümü kendine listele ve hiçbirini kullanma. Cesareti tek bir imza öğede harca, geri kalanını sade tut.");
- kural.push(...(KURAL[k]||KURAL.diger).map(x=>"- "+x));
+  "- Aşağıdakiler Claude çıktısını ilk bakışta ele veren kalıplar; hiçbirini kullanma: "+tells.join("; ")+".",
+  ...(cakisma?["- Seçtiğim palet ("+cakisma+") tipik bir Claude kalıbına benziyor; paleti koru ama o kalıbın diğer işaretlerinden (yerleşim, tipografi, süsler) özellikle uzak dur ve renkleri beklenmedik oranlarda kullan."]:[]),
+  "- Cesareti tek bir imza öğede harca, geri kalanını sade tut.");
+ const val=id=>{const kk=Object.keys(S.v).find(x=>x.endsWith("|"+id));return kk?String(S.v[kk]):""};
+ const tel=/telefon|ekran|instagram|story|sosyal/i.test(val("mesafe")+" "+Object.keys(S.ch).filter(x=>/\|(boyut|amac)$/.test(x)).map(x=>[...S.ch[x]].join(" ")).join(" "));
+ const qrVar=!!val("qr")||/qr/i.test(val("bilgiler"));
+ let kl=[...(KURAL[k]||KURAL.diger)];
+ if(k==="afis"){kl=kl.filter(x=>!/^QR varsa|^Baskı ise|^Tek bir baskın odak/.test(x)&&!(tel&&/^Yazı boyutunu/.test(x)));
+  if(qrVar)kl.push("QR genişliği tarama mesafesinin onda biri, en az 2×2 cm; etrafında boşluk bırak.");
+  kl.push(tel?"Telefon ekranı için: 1080×1350 (4:5) ya da story ise 1080×1920, RGB. Story'de üst ~250 px ve alt ~350 px arayüz bölgesine önemli yazı koyma; afiş akışta küçük önizlemede de okunmalı.":"Baskı için: 3 mm taşma payı, 5 mm güvenli alan, 300 dpi, CMYK.")}
+ kural.push(...kl.map(x=>"- "+x));
  kural.push("- Gerçek isim, marka adı, tarih ve iletişim bilgisi uydurma; brief’te varsa birebir kullan. Yoksa o öğeyi tasarımdan çıkar, [ADINIZ] gibi köşeli parantezli yer tutucu bırakma.","- Diğer eksik bilgilerde durup sorma; makul bir varsayım yap ve teslimin sonunda varsayımları listele.");
  if(S.siri)kural.push("- Cevaplar sesle dikte edildi: özel isimlerde duyma hatası olabilir. Marka ve ürün adlarına dokunma; yalnızca anlamsız ya da bariz yanlış duyulmuş genel kelimeleri düzelt ve sonda hangi kelimeyi neye düzelttiğini yaz.");
- const kabul=[...(KABUL[k]||KABUL.diger),"Brief'teki her MUTLAKA maddesi karşılanmış, hiçbir OLMASIN maddesi yok.","Sonuç, aynı konuda Claude ile yapılmış sıradan bir işten ilk bakışta ayırt edilebiliyor."];
+ let kb=[...(KABUL[k]||KABUL.diger)];
+ if(k==="afis"&&tel)kb=kb.map(x=>/^Baskı ise/.test(x)?"Telefonda akıştaki küçük önizlemede bile başlık ve tarih okunuyor; story ise arayüz bölgeleri boş.":x.replace("belirtilen görülme mesafesinden","telefon ekranında"));
+ if(k==="afis"&&!tel)kb=kb.filter(x=>!/^Baskı ise/.test(x)).concat("Baskıya hazır: 3 mm taşma payı, 300 dpi, CMYK, yazılar kenardan ≥ 5 mm içeride.");
+ const kabul=[...kb,...(val("bilgiler")||val("gercek")?["Brief'teki tarih, saat, yer, fiyat ve isimler birebir (dikte hataları düzeltilmiş olarak) yazılmış."]:[]),"Brief'teki her MUTLAKA maddesi karşılanmış, hiçbir OLMASIN maddesi yok.",...(gorselIs?["Yukarıdaki Claude kalıpları listesindeki hiçbir öğe kullanılmamış."]:[])];
  const L=[];
- L.push("<brief>",...(S.anlat?["### Benim anlatımım (sesle söyledim)",S.anlat,""]:[]),...brief,"</brief>","");
+ const bj=brief.join("\n"),an=(S.anlat||"").split("\n").filter(x=>x.trim()&&!bj.includes(x.replace(/^- [^:]*:\s*/,"").trim()));
+ const bugun=new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"});
+ L.push(`Görev: Aşağıdaki brief ile "${c.n}" işini yap. Ayrıntılı adımlar en sondaki <gorev> bölümünde.`,"");
+ L.push("<brief>","Bugünün tarihi: "+bugun+" (\"yarın\" gibi göreli tarihleri buna göre gerçek tarihe çevir).","",...(an.length?["### Benim anlatımım (sesle söyledim)",...an,""]:[]),...brief,"</brief>","");
  if(ref.length)L.push("<referanslar>",...ref,"</referanslar>","");
  if(sk.length)L.push("<skilller>","İşe başlamadan ÖNCE aşağıdaki her skill’in SKILL.md dosyasını Skill aracıyla yükle ve talimatlarına uy. Teslimde hangi skill’leri kullandığını tek satırla yaz.",...sk,"</skilller>","");
  L.push("<kurallar>",...kural,"</kurallar>","");
  L.push("<kabul_kriterleri>",...kabul.map(x=>"- [ ] "+x),"</kabul_kriterleri>","");
  L.push("<gorev>",`15 yıllık deneyime sahip bir ${ROL[k]||ROL.diger} gibi çalış. Yukarıdaki <brief> ile "${c.n}" işini eksiksiz yap.`,
-  "1. Uzman brief'i: Brief'teki cevaplar kısa ve ham olabilir (ör. “Oyunsal”, “Asi”, “Hepsi”). Üretime geçmeden önce brief'i kendi uzman gözünle yeniden yaz: her cevabı somut bir karara çevir (ör. “Asi” → keskin açılar, kural bozan tek öğe), çelişkileri çöz, eksikleri makul varsayımlarla tamamla. Bu uzman brief'i 5-8 madde olarak göster.",
+  "1. Uzman brief'i: Brief'teki cevaplar kısa ve ham olabilir (ör. “Oyunsal”, “Asi”, “Hepsi”). Üretime geçmeden önce brief'i kendi uzman gözünle yeniden yaz: her cevabı somut bir karara çevir (ör. “Asi” → keskin açılar, kural bozan tek öğe), çelişkileri çöz, eksikleri makul varsayımlarla tamamla. Ayrıca bu iş için akla gelen en bariz 5 çözümü kendine listele ve hiçbirini kullanma; seçtiğin kavramsal yönü tek cümleyle yaz. Bu uzman brief'i 5-8 madde olarak göster.",
   "2. Problemi, kitleyi ve başarı ölçütünü 2 satırda özetle; her önemli kararı uzman brief'teki bir maddeye dayandır.",
   ...(S.yon3?["3. Önce birbirinden radikal farklı 3 yön öner (her biri: ad, 4 hex, font çifti, imza öğe, tek cümle gerekçe) ve seçmemi bekle. Seçince işi üret."]:["3. İşi üret."]),
   "4. Teslim etmeden önce <kabul_kriterleri> listesini tek tek kontrol et; geçmeyen maddeyi düzelt ve listeyi işaretlenmiş hâliyle sonda göster.",
@@ -718,7 +733,7 @@ function result(){
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1600)}
 $("#back").onclick=()=>{if(S.i===0)home();else{S.i--;show()}};
 $("#next").onclick=()=>{if(S.i>=steps().length)$("#cp").click();else{S.i++;show()}};
-$("#restart").onclick=()=>{if(confirm("Baştan başlansın mı? Cevaplar silinir.")){try{localStorage.removeItem("pa_state")}catch(e){}S={mode:S.mode,cat:null,i:0,v:{},ch:{},skills:new Set(),images:[],links:""};home()}};
+$("#restart").onclick=()=>{if(typeof H!=="undefined"&&H.on)hfStop();if(confirm("Baştan başlansın mı? Cevaplar silinir.")){try{localStorage.removeItem("pa_state")}catch(e){}S={mode:S.mode,cat:null,i:0,v:{},ch:{},skills:new Set(),images:[],links:""};home()}};
 home();
 /* ===== SESLİ MOD ===== */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -778,7 +793,7 @@ const CMD=a=>{const n=norm(a);
  if(/neden|niye soruyorsun/.test(n))return"neden";if(/^(bitir|yeter|promptu oluştur|prompt oluştur|bitti)$/.test(n))return"bitir";
  if(/^(sonraki bölüm|bölümü geç|sonraki sayfa)$/.test(n))return"bolum";if(/^(dur|durdur|kapat|sesi kapat)$/.test(n))return"dur";return null};
 function matchOpts(a,opts){const n=norm(a);const hits=opts.filter(o=>{const on=norm(o);if(n.includes(on))return true;
-  const w=on.split(" ").filter(x=>x.length>3);return w.length&&w.filter(x=>n.includes(x.slice(0,Math.max(4,x.length-2)))).length>=Math.ceil(w.length/2)});return hits}
+  const w=on.split(" ").filter(x=>x.length>3);const nw=n.split(" ");return w.length&&w.filter(x=>{const p=x.slice(0,Math.max(4,x.length-2));return nw.some(y=>y.startsWith(p))}).length>=Math.ceil(w.length/2)});return hits}
 function optText(q){const o=q.t==="palette"?PALETS.map(p=>p.n):q.o;return o.length>8?o.slice(0,6).join(", ")+" ve "+(o.length-6)+" seçenek daha":o.join(", ")}
 function curQs(){const st=steps()[S.i];return Array.isArray(st)?qsOf(st).map(q=>({q,key:S.cat+"|"+(q._t||st[0])+"|"+q.id})):[]}
 function mark(i){app.querySelectorAll(".card > .q").forEach((x,j)=>x.classList.toggle("vnow",j===i));const e=app.querySelectorAll(".card > .q")[i];if(e)e.scrollIntoView({behavior:"smooth",block:"center"})}
@@ -788,13 +803,15 @@ function apply(q,key,a){
   if(!v){const A=norm(q.a),Bq=norm(q.b),cok=/çok|tamamen|belirgin|epey/.test(n);
    if(n.includes(A.slice(0,4)))v=cok?1:2;else if(n.includes(Bq.slice(0,4)))v=cok?5:4;else if(/orta|arası|ikisi de/.test(n))v=3}
   if(v){S.v[key]=v;return "beşte "+v}return null}
- if(q.t==="palette"){const h=matchOpts(a,PALETS.map(p=>p.n));if(h[0]){S.v[key]=h[0];return h[0]}return null}
+ if(q.t==="palette"){const na=norm(a),h=PALETS.map(p=>p.n).filter(n=>na.includes(norm(n)));if(h[0]){S.v[key]=h[0];return h[0]}S.v[key]=a.trim();return a.trim()}
  const na=norm(a);
- if(q.t==="chips"&&/(^|\s)(hepsi|hepsini|tümü|tamamı|hepsinin)(\s|$|[.,!])/.test(na)){S.ch[key]=new Set(q.o);const ek=a.replace(/^\S+\s*(olsun|olmasın)?[,.]?\s*/i,"").trim();if(ek)S.v[key+"_ek"]=ek;return "hepsi"}
+ if(q.t==="chips"&&/^(hepsi|hepsini|tümü|tamamı)\b/.test(na)&&!/(değil|hariç|sadece|dışında)/.test(na)){S.ch[key]=new Set(q.o);const ek=a.replace(/\b(hepsi|hepsini|tümü|tamamı|olsun|olmasın|istemiyorum)\b/gi,"").replace(/^[\s,.;:!-]+|[\s,.;:!-]+$/g,"").trim();if(ek.length>2)S.v[key+"_ek"]=ek;else delete S.v[key+"_ek"];return "hepsi"}
  if(/^(hiçbiri|hiç biri|yok)\.?$/.test(na))return null;
  const h=matchOpts(a,q.o);
- if(q.t==="select"){if(h[0]){S.v[key]=h[0];return h[0]}return null}
- S.ch[key]=S.ch[key]||new Set();h.forEach(x=>S.ch[key].add(x));if(!h.length){S.v[key+"_ek"]=a.trim();return "listede yoktu, kendi cevabın olarak yazdım"}return h.join(", ")}
+ if(q.t==="select"){if(h[0]){S.v[key]=h[0];return h[0]}S.v[key]=a.trim();return a.trim()}
+ S.ch[key]=S.ch[key]||new Set();h.forEach(x=>S.ch[key].add(x));if(!h.length){S.v[key+"_ek"]=a.trim();return "listede yoktu, kendi cevabın olarak yazdım"}
+ const ow=new Set(h.flatMap(o=>norm(o).split(" ")).map(x=>x.slice(0,4))),extra=na.split(" ").filter(x=>x.length>3&&!ow.has(x.slice(0,4))&&!/^(olsun|olmasın|istemiyorum|istiyorum|olmasin|bir|şey|gibi|daha)$/.test(x));
+ if(extra.length>=2)S.v[key+"_ek"]=a.trim();return h.join(", ")}
 async function askMic(){
  if(!window.isSecureContext||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return "Bu görüntüleyici mikrofon izni isteyemiyor (güvenli bağlam değil). Dosyayı Chrome uygulamasında aç: dosyaya uzun bas → ⋮ → Birlikte aç → Chrome. Üstte adres çubuğu görünmeli.";
  try{const st=await navigator.mediaDevices.getUserMedia({audio:true});st.getTracks().forEach(t=>t.stop());return ""}
@@ -948,88 +965,137 @@ function chatSend(t,skip){if(C.i<0){toast("Önce bir konu seç");return}const it
 function chatBack(){if(C.i<=0){chatCat();return}C.i-=2;const ms=$("#clog").querySelectorAll(".msg");if(ms.length>=2){ms[ms.length-1].remove();ms[ms.length-2].remove()}chatNext()}
 
 /* ---------- ELLER SERBEST SESLİ SORU-CEVAP (Whisper + sessizlik algılama) ---------- */
-const H={on:false,paused:false,stream:null,ac:null,an:null,list:[],i:0,buf:""};
-function hfList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=steps(),L=[],seen=new Set();
- const add=(q,t)=>{if(seen.has(q.id)||q.t==="scale"||SIRI_SKIP.includes(q.id))return;seen.add(q.id);L.push({q,key:k+"|"+(q._t||t)+"|"+q.id})};
- const first=st.find(x=>Array.isArray(x));if(first)qsOf(first).forEach(q=>add(q,first[0]));
- st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>{if(q.k)add(q,x[0])})});
+const H={on:false,paused:false,busy:false,stream:null,ac:null,an:null,list:[],i:0,buf:[],kisa:false,last:""};
+const vClean=s=>String(s).replace(/\s*\([^)]*\)/g,"").replace(/\s*↔\s*/g," mı, ").replace(/\s*\/\s*/g," ya da ").replace(/[A-ZÇĞİÖŞÜ]{3,}/g,w=>w.toLocaleLowerCase("tr")).trim();
+function hfList(k,kisa){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=steps(),L=[],seen=new Set();
+ const add=(q,t)=>{if(seen.has(q.id))return;seen.add(q.id);L.push({q,key:k+"|"+(q._t||t)+"|"+q.id})};
+ if(kisa){const first=st.find(x=>Array.isArray(x));if(first)qsOf(first).slice(0,4).forEach(q=>add(q,first[0]));
+  st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>{if(q.k&&q.t!=="scale"&&!SIRI_SKIP.includes(q.id))add(q,x[0])})})}
+ else st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>add(q,x[0]))});
  S.cat=pc;S.mode=pm;return L}
-function hfText(q){let t=SIRI_TXT[q.id];
- if(!t){t=q.l.replace(/\s*\([^)]*\)/g,"").replace(/↔/g,"mı").trim();if(!/[?.]$/.test(t))t+=" ne olsun?"}
- else t=t.replace(/(Seçenekler|Örneğin):.*$/,"").trim();
- if((q.t==="select"||q.t==="chips")&&q.o)t+=" Örneğin: "+q.o.slice(0,4).join(", ")+".";
- if(q.t==="palette"&&!SIRI_TXT[q.id])t+=" Örneğin: "+PALETS.filter(p=>p.c).slice(0,4).map(p=>p.n).join(", ")+"; ya da kendi renklerini söyle.";
+function hfText(q){
+ if(q.t==="scale")return `${vClean(q.a)} mı, ${vClean(q.b)} mı? Birden beşe söyle: bir tamamen ${vClean(q.a).toLocaleLowerCase("tr")}, beş tamamen ${vClean(q.b).toLocaleLowerCase("tr")}, üç ortası.`;
+ let t=SIRI_TXT[q.id];t=t?t.replace(/(Seçenekler|Örneğin)[: ].*$/,"").trim():vClean(q.l);
+ if(!/[?.]$/.test(t))t+=" ne olsun?";
+ if(q.o)t+=" Örneğin "+q.o.slice(0,4).map(vClean).join(", ")+(q.t==="chips"?"; birkaçını ya da hepsini seçebilirsin.":"; birini seç.");
+ if(q.t==="palette")t+=" Örneğin İznik Çini, Ebru, Kan Kırmızısı, Okyanus; ya da kendi renklerini tarif et.";
  return t}
 function hfUI(){app.innerHTML=`<div class="hf"><div class="hfprog" id="hprog"></div><div class="hfq" id="hq">Hazırlanıyor…</div>
  <div class="hfst" id="hst"></div><div class="hflvl"><i id="hlvl"></i></div><div class="hfans" id="hans"></div><div class="hfex" id="hex"></div>
  <div class="hfbtns"><button class="btn sec" id="hpause">⏸ Duraklat</button><button class="btn sec" id="hskip">Geç →</button><button class="btn acc" id="hend">Bitir</button></div>
- <div class="help" style="margin-top:14px">Sesli komutlar: <b>geç</b> (soruyu atla), <b>geri</b> (önceki soru), <b>bitir</b>. Cevaptan sonra “başka var mı?” sorusuna <b>yok</b> de.</div></div>`;
- $("#hpause").onclick=()=>{H.paused=!H.paused;$("#hpause").textContent=H.paused?"▶ Devam":"⏸ Duraklat";if(!H.paused)hfLoop()};
- $("#hskip").onclick=()=>{H.skip=true};$("#hend").onclick=()=>hfFinish()}
+ <div class="help" style="margin-top:14px">Sesli komutlar: <b>sil</b> (son söylediğini siler), <b>cevabı sil</b>, <b>tekrar oku</b>, <b>seçenekleri oku</b>, <b>geç</b>, <b>geri</b>, <b>bitir</b>. Cevaptan sonra “başka var mı?” sorusuna <b>yok</b> de.</div></div>`;
+ $("#hpause").onclick=()=>{H.paused=!H.paused;$("#hpause").textContent=H.paused?"▶ Devam":"⏸ Duraklat";if(H.paused)try{speechSynthesis.cancel()}catch(e){};if(!H.paused){hfPrime();hfLoop()}};
+ $("#hskip").onclick=()=>{H.skip=true;try{speechSynthesis.cancel()}catch(e){}};
+ $("#hend").onclick=()=>{H.endReq=true;try{speechSynthesis.cancel()}catch(e){}if(!H.busy)hfFinish()}}
 function hfStat(t,cls){const e=$("#hst");if(e){e.textContent=t;e.className="hfst "+(cls||"")}}
-function hfSay(t){return new Promise(r=>{hfStat("🔊 Okuyorum","konus");if(!window.speechSynthesis)return r();speechSynthesis.cancel();
+const hfShow=()=>{const e=$("#hans");if(e)e.textContent=H.buf.join(" ")};
+const hfBrief=s=>{const w=s.split(/\s+/);return w.length>12?w.slice(0,12).join(" ")+"…":s};
+function hfPrime(){try{if(!H.ac){H.ac=new (window.AudioContext||window.webkitAudioContext)()}H.ac.resume()}catch(e){}
+ try{if(window.speechSynthesis){const u=new SpeechSynthesisUtterance(" ");u.lang="tr-TR";u.volume=0;speechSynthesis.speak(u)}}catch(e){}}
+const hfWait=ms=>new Promise(r=>setTimeout(r,ms));
+function hfSay(t){H.last=t;return new Promise(async r=>{hfStat("🔊 Okuyorum","konus");if(!window.speechSynthesis||H.skip||H.endReq)return r();speechSynthesis.cancel();
  const u=new SpeechSynthesisUtterance(t);u.lang="tr-TR";u.rate=1.02;const vs=speechSynthesis.getVoices().filter(v=>/^tr/i.test(v.lang));if(vs[0])u.voice=vs[0];
- let done=false;const fin=()=>{if(!done){done=true;setTimeout(r,250)}};u.onend=fin;u.onerror=fin;setTimeout(fin,1500+t.length*85);speechSynthesis.speak(u)})}
-function hfRec(){return new Promise(res=>{
- const mt=["audio/webm","audio/mp4","audio/ogg"].find(t=>MediaRecorder.isTypeSupported(t))||"";
+ let ended=false;u.onend=u.onerror=()=>{ended=true};speechSynthesis.speak(u);
+ const t0=Date.now(),max=4000+t.length*110;await hfWait(300);
+ while(!ended&&Date.now()-t0<max&&!H.skip&&!H.endReq&&(speechSynthesis.speaking||speechSynthesis.pending))await hfWait(120);
+ await hfWait(350);r()})}
+function hfRec(){return new Promise(async res=>{
+ try{if(H.ac.state!=="running")await H.ac.resume()}catch(e){}
+ const mt=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg"].find(t=>MediaRecorder.isTypeSupported(t))||"";
  const r=new MediaRecorder(H.stream,mt?{mimeType:mt}:{}),parts=[],buf=new Float32Array(H.an.fftSize);
- let t0=performance.now(),spoke=false,lastV=t0,floor=0,n=0,stopped=false;
+ const t0=performance.now();let spoke=false,talk=0,lastV=t0,floor=0,n=0,done=false,last=t0;
  r.ondataavailable=e=>e.data.size&&parts.push(e.data);
- r.onstop=()=>res({blob:new Blob(parts,{type:r.mimeType||"audio/webm"}),spoke,type:r.mimeType||""});
+ r.onstop=()=>res({blob:new Blob(parts,{type:r.mimeType||"audio/webm"}),spoke:spoke&&talk>500,type:r.mimeType||""});
  r.start(250);hfStat("🎙 Dinliyorum…","dinle");
- const tick=()=>{if(stopped)return;H.an.getFloatTimeDomainData(buf);let s=0;for(const x of buf)s+=x*x;const rms=Math.sqrt(s/buf.length),now=performance.now();
-  if(now-t0<400){floor+=rms;n++}const thr=Math.max(.018,(n?floor/n:0)*2.8);
+ const iv=setInterval(()=>{if(done)return;H.an.getFloatTimeDomainData(buf);let s=0;for(const x of buf)s+=x*x;const rms=Math.sqrt(s/buf.length),now=performance.now(),dt=now-last;last=now;
+  if(now-t0<400){floor+=rms;n++}const thr=Math.max(.015,(n?floor/n:0)*2.5);
   const l=$("#hlvl");if(l)l.style.width=Math.min(100,rms*900)+"%";
-  if(rms>thr){if(!spoke)hfStat("🎙 Dinliyorum… (bitince sus)","dinle on");spoke=true;lastV=now}
-  const stop=H.skip||H.paused||!H.on||(spoke&&now-lastV>2200)||(!spoke&&now-t0>12000)||now-t0>90000;
-  if(stop){stopped=true;r.stop();return}requestAnimationFrame(tick)};tick()})}
+  if(rms>thr){if(!spoke)hfStat("🎙 Dinliyorum… (bitince sus)","dinle on");spoke=true;talk+=dt;lastV=now}
+  if(H.skip||H.endReq||H.paused||!H.on||(spoke&&now-lastV>2300)||(!spoke&&now-t0>12000)||now-t0>120000){done=true;clearInterval(iv);r.stop()}},50)})}
+const HF_HALL=/(altyaz[ıi]|izlediğiniz için|abone ol|teşekkürler(\s+izlediğiniz)?$|^\s*m\.?\s?k\.?\s*$|beğen(meyi)? unutmay)/i;
 async function hfSTT(o){hfStat("✍️ Yazıya çeviriyorum","cevir");const key=localStorage.getItem("groq_key");
  const ext=o.type.includes("mp4")?"m4a":o.type.includes("ogg")?"ogg":"webm",fd=new FormData();
- fd.append("file",o.blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");
- const cq=H.list[H.i]&&H.list[H.i].q;fd.append("prompt",(CATS[S.cat]?CATS[S.cat].n+". ":"")+(cq&&cq.o?cq.o.join(", ")+". ":cq&&cq.t==="palette"?PALETS.map(p=>p.n).join(", ")+". ":"")+"hepsi, geç, geri, yok, tamam, bitir");
+ fd.append("file",o.blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");fd.append("temperature","0");
+ const cq=H.list[H.i]&&H.list[H.i].q;const ip=cq&&cq.o?cq.o.join(", "):cq&&cq.t==="palette"?PALETS.map(p=>p.n).join(", "):"";
+ if(ip)fd.append("prompt",ip+".");
  const res=await fetch("https://api.groq.com/openai/v1/audio/transcriptions",{method:"POST",headers:{Authorization:"Bearer "+key},body:fd});
- if(res.status===401){localStorage.removeItem("groq_key");throw new Error("Anahtar geçersiz")}
+ if(res.status===401){localStorage.removeItem("groq_key");throw new Error("Groq anahtarı geçersiz")}
+ if(res.status===429)throw new Error("Groq dakikalık sınırı doldu, biraz bekle");
  if(!res.ok)throw new Error("Groq hatası "+res.status);return ((await res.json()).text||"").trim()}
-async function hfHear(){const o=await hfRec();if(!o.spoke||H.skip||H.paused||!H.on)return o.spoke?"":null;try{return await hfSTT(o)}catch(e){hfStat("⚠️ "+e.message,"err");await hfSay("Bir hata oldu: "+e.message);return null}}
-const HF_NO=/^(yok|hayır|hayir|yok başka|başka yok|tamam|bu kadar|sıradaki|siradaki|devam|geçelim|o kadar)[.!]?$/i,HF_SKIP=/^(geç|gec|atla|pas|bilmiyorum|boş ver)[.!]?$/i,HF_BACK=/^(geri|önceki|geri dön)[.!]?$/i,HF_END=/^(bitir|bitti|prompt(u)? (oluştur|hazırla)|sonuca geç)[.!]?$/i;
+async function hfHear(){const o=await hfRec();if(!o.spoke||H.skip||H.endReq||H.paused||!H.on)return null;
+ let t;try{t=await hfSTT(o)}catch(e){hfStat("⚠️ "+e.message,"err");H.paused=true;const b=$("#hpause");if(b)b.textContent="▶ Devam";await hfSay(e.message+". Duraklattım; düzelince Devam'a bas.");return null}
+ if(!t||HF_HALL.test(t))return null;
+ const nl=hfNorm(H.last),nt=hfNorm(t);if(nt.length>25&&nt.length>nl.length*.6&&nl.includes(nt.slice(0,25)))return null; // kendi sesimizin yankısı
+ return t}
+const HF_FILL=new Set("tamam peki evet okey ok şey ee hı hadi lütfen artık o zaman bunu onu".split(" "));
+function hfNorm(s){return String(s||"").toLocaleLowerCase("tr").normalize("NFC").replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim()}
+const HF_CMDS=[
+ ["DEL",/^(sil|sil onu|onu sil|son(uncuyu| söylediğimi| eklediğimi)? sil|geri al|iptal)$/],
+ ["CLR",/^(hepsini sil|cevabı sil|cevabımı sil|tümünü sil|baştan( al)?|sıfırla)$/],
+ ["REP",/^(tekrar( oku| et| sor)?|tekrarla|soruyu (tekrar )?oku|bir daha( oku| sor)?|anlamadım)$/],
+ ["OPT",/^(seçenekleri (oku|say|söyle)|seçenekler( neler)?|neler var)$/],
+ ["SKIP",/^(geç|atla|pas( geç)?|bu soruyu geç|geçelim|bilmiyorum)$/],
+ ["BACK",/^(geri( dön| git)?|önceki( soru)?|önceki soruya dön)$/],
+ ["END",/^(bitir|bitti|yeter|bitirelim|promptu (oluştur|hazırla)|sonuca geç)$/],
+ ["NEXT",/^(yok|hayır|hayır yok|tamam|sıradaki|devam|ileri|bu kadar|yok başka|başka yok|o kadar|hayır teşekkürler|yok teşekkürler|teşekkürler)$/]];
+function hfClassify(text){const n=hfNorm(text);if(!n)return{cmd:"EMPTY",rest:""};
+ if(n.split(" ").length>5)return{cmd:null,rest:text.trim()};
+ const m=x=>{for(const[c,re]of HF_CMDS)if(re.test(x))return c;return null};
+ let c=m(n);if(c)return{cmd:c,rest:""};
+ const core=n.split(" ").filter(w=>!HF_FILL.has(w)).join(" ");c=core&&m(core);
+ if(!c&&/^(yok|hayır|tamam|bu kadar)\b/.test(n)&&n.split(" ").length<=4)c="NEXT";
+ return c?{cmd:c,rest:""}:{cmd:null,rest:text.trim()}}
+function hfClear(it){delete S.v[it.key];delete S.v[it.key+"_ek"];delete S.ch[it.key];
+ const lab="- "+it.q.l.replace(/\?$/,"")+":";S.anlat=(S.anlat||"").split("\n").filter(x=>!x.startsWith(lab)).join("\n")}
 async function hfStart(){
  let key="";try{key=localStorage.getItem("groq_key")||""}catch(e){}
  if(!key){app.innerHTML=`<h1>Sesli soru-cevap</h1><p class="sub">Konuşmanı doğru yazıya çevirmek için ücretsiz Groq anahtarı gerekiyor (bir kerelik). console.groq.com → API Keys → Create API Key. Anahtar sadece bu telefonda saklanır.</p><input type="text" id="gki" placeholder="gsk_..." autocomplete="off" style="width:100%"><div class="row" style="margin-top:10px"><button class="btn acc" id="gks">Kaydet ve başla</button></div>`;
-  $("#gks").onclick=()=>{const v=$("#gki").value.trim();if(!/^gsk_/.test(v)){toast("Anahtar gsk_ ile başlamalı");return}localStorage.setItem("groq_key",v);hfStart()};return}
- if(!window.MediaRecorder){toast("Bu tarayıcı ses kaydını desteklemiyor");return}
- try{H.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){toast("Mikrofon izni gerekli");return}
- H.ac=new (window.AudioContext||window.webkitAudioContext)();await H.ac.resume();H.an=H.ac.createAnalyser();H.an.fftSize=2048;H.ac.createMediaStreamSource(H.stream).connect(H.an);
- if(window.speechSynthesis){const u=new SpeechSynthesisUtterance(" ");u.lang="tr-TR";speechSynthesis.speak(u)}
- H.on=true;H.paused=false;S.mode="detay";$("#nav").classList.add("hide");$("#restart").classList.remove("hide");hfUI();
- if(!S.cat){$("#hq").textContent="Ne yapmak istiyorsun?";$("#hex").textContent=Object.values(CATS).map(c=>c.n).join(" · ");
-  for(;;){if(!H.on)return;await hfSay("Merhaba. Ne yapmak istiyorsun? Örneğin sunum, afiş, logo, site ya da video.");const t=await hfHear();if(t==null)continue;
-   const n=norm(t);const k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)));
-   if(k){S.cat=k;S.v={};S.ch={};S.anlat="";S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");break}
-   await hfSay("Anlayamadım, tekrar söyler misin?")}}
- H.list=hfList(S.cat);H.i=0;await hfSay(CATS[S.cat].n+". Toplam "+H.list.length+" soru var. Geçmek istediğinde geç de.");hfLoop()}
+  $("#gks").onclick=()=>{const v=$("#gki").value.trim();if(!/^gsk_/.test(v)){toast("Anahtar gsk_ ile başlamalı");return}localStorage.setItem("groq_key",v);hfPrime();hfStart()};return}
+ if(!window.MediaRecorder)throw new Error("Bu tarayıcı ses kaydını desteklemiyor");
+ try{H.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){throw new Error("Mikrofon izni verilmedi. Adres çubuğundaki kilit/aA simgesinden mikrofona izin ver.")}
+ hfPrime();H.an=H.ac.createAnalyser();H.an.fftSize=2048;H.ac.createMediaStreamSource(H.stream).connect(H.an);
+ H.on=true;H.paused=false;H.endReq=false;H.skip=false;S.mode="detay";S.siri=true;$("#nav").classList.add("hide");$("#restart").classList.remove("hide");hfUI();
+ S.cat=null;$("#hq").textContent="Ne yapmak istiyorsun?";$("#hex").textContent=Object.values(CATS).map(c=>c.n).join(" · ");
+ for(;;){if(!H.on||H.endReq)return hfFinish();if(H.paused){await hfWait(300);continue}
+  await hfSay("Merhaba. Ne yapmak istiyorsun? Örneğin sunum, afiş, logo, site ya da video.");const t=await hfHear();if(t==null)continue;
+  const n=norm(t);const k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)));
+  if(k){S.cat=k;S.v={};S.ch={};S.anlat="";S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");break}
+  await hfSay("Anlayamadım, tekrar söyler misin?")}
+ const nd=hfList(S.cat,false).length,nk=hfList(S.cat,true).length;$("#hq").textContent=CATS[S.cat].n+": detaylı mı, kısa mı?";$("#hex").textContent=`Detaylı: ${nd} soru · Kısa: ${nk} soru`;
+ for(let tr=0;tr<3;tr++){await hfSay(`${CATS[S.cat].n}. Detaylı mı ilerleyelim, kısa mı? Detaylıda ${nd}, kısada ${nk} soru var.`);const t=await hfHear();if(t==null)continue;H.kisa=/kısa|hızlı|az/.test(hfNorm(t));break}
+ H.list=hfList(S.cat,H.kisa);H.i=0;
+ await hfSay("Tamam, "+H.list.length+" soru. Silmek için sil, soruyu tekrar duymak için tekrar oku, atlamak için geç de.");hfLoop()}
 async function hfLoop(){if(H.busy)return;H.busy=true;
- try{while(H.on&&!H.paused&&H.i<H.list.length){const it=H.list[H.i];H.skip=false;H.buf="";
-  $("#hprog").textContent=CATS[S.cat].i+" "+CATS[S.cat].n+" · Soru "+(H.i+1)+" / "+H.list.length;$("#hq").textContent=it.q.l;
-  $("#hex").textContent=it.q.o?it.q.o.join(" · "):it.q.t==="palette"?PALETS.map(p=>p.n).join(" · "):(it.q.p||"");$("#hans").textContent="";
-  await hfSay(hfText(it.q));let first=true,move=1;
-  for(;;){if(!H.on||H.paused){H.busy=false;return}
-   const t=await hfHear();if(H.skip){move=1;break}if(t==null){if(H.paused||!H.on){H.busy=false;return}await hfSay(first?"Seni duyamadım. Tekrar söyler misin? Atlamak için geç de.":"Başka eklemek istediğin var mı?");continue}
-   const c=t.replace(/[.,!?]+$/,"").trim();
-   if(HF_END.test(c)){hfApply(it);return hfFinish()}
-   if(HF_BACK.test(c)){move=-1;break}
-   if(first&&HF_SKIP.test(c)){move=1;break}
-   if(!first&&(HF_NO.test(c)||HF_SKIP.test(c))){move=1;break}
-   if(!c){continue}
-   H.buf=(H.buf?H.buf+" ":"")+t;$("#hans").textContent=H.buf;first=false;
-   await hfSay("Başka eklemek istediğin var mı?")}
-  hfApply(it);H.i=Math.max(0,H.i+move);save()}
- if(H.on&&!H.paused&&H.i>=H.list.length){H.busy=false;await hfSay("Tamamdır, promptun hazır.");hfFinish()}}
- finally{H.busy=false}}
-function hfApply(it){if(!H.buf)return;const q=it.q,t=H.buf;H.buf="";
+ try{while(H.on&&!H.paused&&!H.endReq&&H.i<H.list.length){const it=H.list[H.i],q=it.q,tek=q.t==="scale"||q.t==="select"||q.t==="palette";H.skip=false;H.buf=[];
+  $("#hprog").textContent=CATS[S.cat].i+" "+CATS[S.cat].n+" · Soru "+(H.i+1)+" / "+H.list.length;$("#hq").textContent=vClean(q.l);
+  $("#hex").textContent=q.o?q.o.join(" · "):q.t==="palette"?PALETS.map(p=>p.n).join(" · "):q.t==="scale"?`1 = ${q.a} … 5 = ${q.b}`:(q.p||"");hfShow();
+  await hfSay(hfText(q));let first=true,move=1;
+  for(;;){if(!H.on||H.paused||H.endReq)break;
+   const t=await hfHear();if(H.skip){H.buf=[];move=1;break}
+   if(t==null){if(!H.on||H.paused||H.endReq)break;await hfSay(first?"Seni duyamadım. Tekrar söyler misin? Atlamak için geç de.":"Başka eklemek istediğin var mı?");continue}
+   const {cmd,rest}=hfClassify(t);
+   if(cmd==="EMPTY")continue;
+   if(cmd==="END"){H.endReq=true;break}
+   if(cmd==="BACK"){move=-1;break}
+   if(cmd==="SKIP"){H.buf=[];move=1;break}
+   if(cmd==="NEXT"){move=1;break}
+   if(cmd==="REP"){await hfSay(hfText(q));continue}
+   if(cmd==="OPT"){const o=q.o||(q.t==="palette"?PALETS.map(p=>p.n):null);await hfSay(o?"Seçenekler: "+o.map(vClean).join(", "):q.t==="scale"?"Birden beşe bir sayı söyle.":"Bu soru serbest cevaplı.");continue}
+   if(cmd==="DEL"){const x=H.buf.pop();hfShow();first=!H.buf.length;await hfSay(x?"Sildim. "+(H.buf.length?"Kalan: "+hfBrief(H.buf.join(" ")):"Cevap şu an boş, tekrar söyleyebilirsin."):"Silinecek bir şey yok.");continue}
+   if(cmd==="CLR"){H.buf=[];hfClear(it);hfShow();first=true;await hfSay("Cevabı temizledim. Tekrar söyleyebilirsin.");continue}
+   H.buf.push(rest);hfShow();first=false;
+   if(tek){await hfSay("Aldım: "+hfBrief(H.buf.join(" ")));move=1;break}
+   await hfSay("Aldım: "+hfBrief(H.buf[H.buf.length-1])+". Başka eklemek istediğin var mı?")}
+  hfApply(it);if(H.paused||!H.on)break;if(H.endReq)break;
+  H.i=Math.max(0,H.i+move);save()}
+ }finally{H.busy=false}
+ if(H.on&&(H.endReq||H.i>=H.list.length)){await hfSay("Tamamdır, promptun hazır.");hfFinish()}}
+function hfApply(it){if(!it||!H.buf.length)return;const q=it.q,t=H.buf.join(" ");H.buf=[];hfClear(it);
  if(q.t==="text"||q.t==="textarea"){S.v[it.key]=t;return}
  const r=apply(q,it.key,t);if(r==null)S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+q.l.replace(/\?$/,"")+": "+t}
-function hfFinish(){H.on=false;H.paused=false;try{speechSynthesis.cancel()}catch(e){}if(H.stream)H.stream.getTracks().forEach(t=>t.stop());try{H.ac&&H.ac.close()}catch(e){}
- if(!S.cat){home();return}S.siri=true;$("#nav").classList.remove("hide");result()}
+function hfStop(){H.on=false;H.paused=false;try{speechSynthesis.cancel()}catch(e){}if(H.stream)H.stream.getTracks().forEach(t=>t.stop());H.stream=null}
+function hfFinish(){if(H.list[H.i]&&H.buf.length)hfApply(H.list[H.i]);hfStop();H.endReq=false;
+ if(!S.cat){home();return}$("#nav").classList.remove("hide");save();result()}
 </script>
 </body>
 </html>
