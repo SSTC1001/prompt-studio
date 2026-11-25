@@ -84,6 +84,7 @@ textarea{min-height:90px;resize:vertical}
 .thumb .x{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);color:#fff;border:0;border-radius:50%;width:26px;height:26px;cursor:pointer}
 .thumb .n{font-size:11px;color:var(--mute);padding:6px 8px 0;font-weight:700}
 .thumb select,.thumb input{width:100%;border:0;border-top:1px solid var(--line);padding:8px;font:500 12.5px 'DM Sans',system-ui,sans-serif;background:#fff;color:var(--ink);border-radius:0}
+.yon3{display:flex;gap:8px;align-items:center;margin:10px 0;font-size:15px}.yon3 input{width:20px;height:20px}
 /* skill */
 .skills{display:grid;gap:8px}
 .sk{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:11px 12px;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink)}
@@ -156,6 +157,7 @@ const B = {
  ]],
  GEREKSINIM:["Gereksinimler (olmazsa olmaz → olmasın)",[
   {k:1,id:"gercek",l:"İşte görünecek gerçek isimler, marka adı ve iletişim bilgileri",t:"textarea",w:"Claude gerçek isim ve iletişim bilgisini bilemez; yazılmazsa [ADINIZ] gibi boş yer bırakır.",p:"Örn: Ekip: Ali Yılmaz, Ayşe Kaya · @deone_drone · 12 Aralık"},
+  {k:1,id:"aksiyon",l:"Gören kişi sonunda ne yapmalı?",t:"text",w:"Her tasarım tek bir eyleme götürmeli; eylem net değilse göz dolaşır ve kaybolur.",p:"Örn: QR'ı okutup takip etsin, etkinliğe kayıt olsun"},
   {k:1,id:"must",l:"MUTLAKA olmalı",t:"textarea",w:"Kesin gereksinimler pazarlık konusu değildir; önce bunlar karşılanır.",p:"Logo, belirli bilgiler, bölümler, cümleler..."},
   {id:"should",l:"Olsa iyi olur",t:"textarea",w:"Zaman/alan kalırsa eklenecekler. Ayrı tutmak ana işi korur."},
   {k:1,id:"wont",l:"OLMASIN",t:"chips",w:"Yasaklar, jenerik sonucu engellemenin en etkili yoludur.",o:["Mor-mavi gradyan","3'lü kart grid'i","Emoji ikonlar","Ortalanmış klişe hero","Inter / Roboto / Arial","Stok gülen insan fotoğrafı","Glassmorphism","Aşırı yuvarlak köşeler","'İnanılmaz, yenilikçi' kelimeleri","Soruyla açılış","Uzun paragraflar","Gereksiz animasyon","Pasta grafik","Clipart","Space Grotesk (Claude'un yeni klişesi)","Düz tek renk arka plan","Tahmin edilebilir şablon yerleşim","Beyaz üstüne mor"]}
@@ -304,7 +306,8 @@ const CATS = {
    {id:"baslik",l:"Ana başlık",t:"text"},
    {id:"bilgiler",l:"Olması gereken bilgiler",t:"textarea",p:"Tarih, saat, yer, fiyat, iletişim, QR..."},
    {id:"mesafe",l:"Nereden görülecek?",t:"select",w:"Poster ekranda değil, gerçek görülme mesafesinde okunmalı; mesafe yazı boyutunu belirler.",o:["Uzaktan (10 m+)","Orta (3-6 m)","Yakından / elde","Telefon ekranında"]},
-   {id:"hiyerarsi",l:"İlk bakışta ne görülsün?",t:"text",p:"Örn: Önce tarih, sonra isim"}]],
+   {id:"hiyerarsi",l:"İlk bakışta ne görülsün?",t:"text",p:"Örn: Önce tarih, sonra isim"},
+   {id:"qr",l:"Afişte QR kod olsun mu, neye gitsin?",t:"text",w:"QR, tarama mesafesinin onda biri genişlikte olmalı; küçük kalırsa okunmaz.",p:"Örn: instagram.com/deone_drone · yoksa boş bırak"}]],
   ["Boyut ve baskı",[
    {id:"boyut",l:"Boyut",t:"chips",o:["A4 dikey","A3","Instagram dikey 4:5 (1080×1350)","Instagram ızgara 3:4 (1080×1440)","Instagram kare","Instagram story 9:16","Yatay banner","Kartvizit"]},
    {id:"baski",l:"Basılacak mı?",t:"select",o:["Evet, baskı kalitesi","Sadece dijital"]}]],
@@ -481,7 +484,7 @@ const steps=()=>{const a=allSteps();if(S.mode!=="hizli")return a;
  return [QC.st[0],"IMG","SKILL"]};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,cat:S.cat,i:S.i,v:S.v,anlat:S.anlat||"",links:S.links,ch:Object.fromEntries(Object.entries(S.ch).map(([k,v])=>[k,[...v]])),skills:[...S.skills]}))}catch(e){}}
+function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,cat:S.cat,i:S.i,v:S.v,anlat:S.anlat||"",yon3:!!S.yon3,links:S.links,ch:Object.fromEntries(Object.entries(S.ch).map(([k,v])=>[k,[...v]])),skills:[...S.skills]}))}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem("pa_state")||"null")}catch(e){return null}}
 function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  $("#nav").classList.add("hide");$("#restart").classList.add("hide");
@@ -579,17 +582,44 @@ const KABUL={
  eposta:["Ana istek ilk iki satırda; tek e-posta tek istek.","Konu satırı içeriği ve aciliyeti söylüyor.","Okuru beklemede bırakan belirsiz ifade yok; tarih ve sonraki adım net."],
  diger:["Brief'teki her MUTLAKA maddesi karşılanmış."]
 };
-const YON={est:["Swiss / Bauhaus","Art Deco","Memphis","Brütalist","70'ler Türk plak kapağı","Yeşilçam afişi","Japon minimalizmi","Risograf baskı","Konstrüktivist","Art Nouveau","Y2K","Editoryal dergi","İznik çini","Psikedelik 60'lar","Op-art"],
- ilham:["müze sergi etiketi","eski bilet / pul","maç programı","ilaç ambalajı","harita / kartografi","bilimsel botanik çizim","tren tarifesi","plak kapağı","sinema afişi","çocuk kitabı illüstrasyonu","sokak tabelası","dergi kapağı"],
- renk:["sıcak toprak + tek elektrik mavisi","pastel zemin + siyah + tek neon","tek renk tonları (monokrom yeşil)","kırmızı + krem + siyah (konstrüktivist)","mor + hardal","zeytin + pembe","turkuaz + mercan + beyaz (İznik)","sarı zemin + siyah","bordo + açık gri + altın"]};
+const YON={paket:[
+ {n:"Risograf iki mürekkep",c:["#f4efe3","#0a4ea3","#ff48b0","#1a1a1a"],f:"Archivo Black + Work Sans",at:"üst üste binen yarı saydam mürekkepler, hafif kayık baskı (misregistration), grenli doku",imza:"tek dev başlık harfi iki renkte kaydırılmış"},
+ {n:"İsviçre afiş",c:["#eb2544","#f2f0e9","#111111","#145373"],f:"Archivo + Archivo Narrow",at:"katı modüler ızgara, bol boşluk, sola yaslı metin bloğu",imza:"sayfayı çapraz kesen tek kırmızı blok"},
+ {n:"Konstrüktivist",c:["#d7261e","#efe6d2","#111111","#c9a227"],f:"Oswald + Source Serif 4",at:"diyagonal kompozisyon, kesilmiş fotoğraf, kalın çizgiler",imza:"45° eğik yazı bandı"},
+ {n:"Memphis",c:["#ffd23f","#ff6f91","#00a6a6","#1b1b1b"],f:"Bricolage Grotesque + DM Sans",at:"zikzak, nokta, dalga desenleri; düz renkli geometrik şekiller",imza:"kenardan taşan tek büyük geometrik şekil"},
+ {n:"Yeşilçam afişi",c:["#1d1a17","#e8c547","#c8102e","#f3e9d2"],f:"Abril Fatface + Alegreya Sans",at:"elle boyanmış hissi, dramatik ışık, eskimiş kâğıt",imza:"eğik, gölgeli, elle çizilmiş gibi başlık"},
+ {n:"70'ler Türk plak kapağı",c:["#e85d04","#6a994e","#f2cc8f","#3d2c2e"],f:"Shrikhand + Rubik",at:"yuvarlak süper grafikler, gün batımı şeritleri, sıcak tonlar",imza:"arka planda iç içe yay şeritler"},
+ {n:"İznik çini",c:["#f7f4ec","#1e3f8c","#2aa6a6","#c8322b"],f:"Cormorant Garamond + Nunito Sans",at:"lale ve rumi motifli simetrik çerçeve, sır parlaklığı",imza:"tek merkezi çini madalyon"},
+ {n:"Japon minimal",c:["#f5f1e8","#111111","#bc002d","#8a8a8a"],f:"Zen Kaku Gothic New + Noto Serif Display",at:"devasa boşluk, dikey yazı vurgusu, tek kırmızı daire",imza:"boşluğun ortasında tek kırmızı nokta"},
+ {n:"Brütalist zine",c:["#ffffff","#000000","#ff2a00","#d9d9d9"],f:"Anton + IBM Plex Sans",at:"fotokopi grenli siyah-beyaz kolaj, bant ve zımba izleri",imza:"sayfadan taşan kesilmiş dev kelime"},
+ {n:"Op-art",c:["#000000","#ffffff","#ffe600","#7b2cbf"],f:"Unbounded + Manrope",at:"titreşen siyah-beyaz çizgi desenleri, optik derinlik",imza:"merkezde bükülen çizgi illüzyonu"},
+ {n:"Psikedelik 60'lar",c:["#ff5400","#8338ec","#ffbe0b","#fb5607"],f:"Monoton + Karla",at:"eriyen akışkan harfler, sıcak zıt renk titreşimi",imza:"eriyerek akan başlık"},
+ {n:"Botanik çizim",c:["#eef0e6","#2d4a22","#b5523b","#c9b37e"],f:"EB Garamond + Libre Franklin",at:"ince gravür çizim, latince etiketler, arşiv kâğıdı",imza:"tek büyük ayrıntılı gravür"},
+ {n:"Y2K krom",c:["#c0c7d1","#1b1f3b","#00e5ff","#ff3ea5"],f:"Syne + Space Mono",at:"metalik krom harfler, yıldız parıltıları, pürüzsüz yansıma",imza:"krom kaplı 3B başlık"},
+ {n:"Spor maç programı",c:["#0b6e4f","#f9f7f1","#ffcc00","#121212"],f:"Bebas Neue + Barlow",at:"numaralı forma tipografisi, saha çizgileri, bilet kesikleri",imza:"forma numarası gibi dev rakam"},
+ {n:"Kartografi",c:["#e9e4d4","#24577a","#c1440e","#3a3a3a"],f:"Spectral + Barlow Semi Condensed",at:"eş yükselti çizgileri, rota noktaları, pusula",imza:"konuya göre çizilmiş tek rota çizgisi"}],
+ ilham:["müze sergi etiketi","eski bilet / pul","maç programı","ilaç ambalajı","harita","bilimsel botanik çizim","tren tarifesi","plak kapağı","sinema afişi","çocuk kitabı","sokak tabelası","kibrit kutusu","sigara kâğıdı ambalajı","konserve etiketi"]};
+function lum(h){const v=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4));return .2126*v[0]+.7152*v[1]+.0722*v[2]}
+function kont(a,b){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+function metinCift(c){let best=null;c.forEach(z=>c.forEach(m=>{if(z===m)return;const r=kont(z,m);if(!best||r>best.r)best={z,m,r}}));return best}
 function pick(a,seed){return a[Math.abs(seed)%a.length]}
+const TELL_ORTAK=["krem/bej zemin + terracotta ya da pas rengi","lacivert ya da slate zemin + turuncu/amber veya neon vurgu","mordan maviye gradyan","harf aralıklı BÜYÜK HARF küçük üst etiket (eyebrow) + serif başlık + gri alt başlık","başında sıfır olan numaralar (01, 02…)","monospace teknik etiketler ve blueprint ızgarası (brief istemedikçe)","başlığın son kelimesini italik serifle vurgulamak"];
+const TELL={afis:[...TELL_ORTAK,"\"ŞEMA NO / ÖLÇEK\" gibi süs teknik yazılar","her şeyi ince çizgilerle kutulamak"],
+ sunum:[...TELL_ORTAK,"dev istatistik satırı (3.2x, %47)","ikonları renkli dairede 3'lü kart","ortasında sayı olan halka grafik","\"Kilit İçgörü\" kutusu","01-04 numaralı gündem slaytı","koyu \"Teşekkürler / Sorular?\" kapanışı"],
+ site:[...TELL_ORTAK,"ortalanmış hero + hap buton","3'lü özellik kartı ızgarası","pastel hap etiketler","sol renkli çubuklu bilgi kutusu","dev istatistik satırı"],
+ dashboard:[...TELL_ORTAK,"açık gri etiketli koyu KPI kutuları","altında neon parıltı olan yuvarlak kartlar","ortasında sayı olan halka grafik","kesikli ızgaralı grafik + kutulu lejant"],
+ diger:TELL_ORTAK};
+TELL.uygulama=TELL.site;TELL.oyun=TELL_ORTAK;TELL.logo=TELL_ORTAK;
 function build(){
  const k=S.cat,c=CATS[k];let filled=S.anlat?1:0;const brief=[],ref=[],sk=[];
  steps().forEach(st=>{
   if(st==="IMG"){const im=S.images.map((x,i)=>`- Görsel ${i+1} → ${x.role}${x.note?": "+x.note:""}`);
    const ln=S.links.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>"- Link: "+s);
    if(im.length||ln.length)ref.push(...(im.length?["Mesaja eklediğim görseller, sırasıyla:"]:[]),...im,...ln,"Görselleri birebir kopyalama; her birinden yalnızca belirttiğim özelliği al (renk, yerleşim, his). Ortak olup belirtmediğim özellikleri kalıp sanma. 'OLMASIN' etiketli görselin tam tersi yöne git. Referanslar çatışırsa birini ana yön seç, diğerlerinden 1-2 detay al.");return}
-  if(st==="SKILL"){if(S.skills.size)sk.push(...[...S.skills].map(s=>"- "+s),"Bir skill mevcut değilse en yakınını kullan ve bunu söyle.");return}
+  if(st==="SKILL"){const sl=[...S.skills],sk1=sl.filter(x=>!/\(artifact\)/.test(x)),art=sl.filter(x=>/\(artifact\)/.test(x));
+   if(sk1.length)sk.push("Skill'ler:",...sk1.map(s=>"- "+s));if(art.length)sk.push("Çıktı türü (skill değil, artifact türü olarak oluştur): "+art.map(x=>x.replace(/ \(artifact\)/,"")).join(", "));
+   if(S.skills.has("brand-guidelines"))sk.push("Not: brand-guidelines skill'i Anthropic'in kendi marka renklerini uygular; bu işte o renkleri KULLANMA, sadece marka tutarlılığı yöntemini al.");
+   if(sl.length)sk.push("Bir skill mevcut değilse en yakınını kullan ve bunu söyle.");return}
   if(st.quick){const g={};st[1].forEach(q=>(g[q._t]=g[q._t]||[]).push(q));Object.entries(g).forEach(([t,qs])=>emit(t,qs));return}
   emit(st[0],qsOf(st))});
  function emit(title,qs){const out=[];
@@ -604,12 +634,14 @@ function build(){
  const gorselIs=["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k);
  const kural=[],has=id=>Object.keys(S.v).some(x=>x.endsWith("|"+id)&&S.v[x])||Object.keys(S.ch).some(x=>x.endsWith("|"+id)&&S.ch[x].size);
  if(gorselIs&&!has("estetik")&&!has("palet")){S.seed=S.seed||(Date.now()/1000|0);const sd=S.seed;
-  brief.push("### Bu iş için seçilen yön (rastgele atandı, buna sadık kal)","- Estetik: "+pick(YON.est,sd),"- İlham alınacak nesne: "+pick(YON.ilham,sd>>3),"- Renk yönü: "+pick(YON.renk,sd>>5),"")}
+  const p=pick(YON.paket,sd),mc=metinCift(p.c),vur=p.c.filter(x=>x!==mc.z&&x!==mc.m);
+  brief.push("### Bu iş için seçilen yön (rastgele atandı, buna sadık kal)","- Estetik: "+p.n,"- Palet (başka renk ekleme): "+p.c.join(", "),"- Zemin "+mc.z+", ana metin "+mc.m+" (kontrast "+mc.r.toFixed(1)+":1). Diğerleri ("+vur.join(", ")+") yalnızca vurgu ve büyük başlık; küçük yazıda kullanma.","- Font: "+p.f+" (Google Fonts, latin-ext alt kümesiyle)","- Atmosfer: "+p.at,"- İmza öğe (cesaret yalnızca burada, geri kalan sade): "+p.imza,"- İlham alınacak nesne: "+pick(YON.ilham,sd>>3),"")}
  if(gorselIs)kural.push(
   "- Açık uçlu tasarım işlerinde varsayılan bir 'ev stiline' kayma eğilimin var. Bunun yerine bu brief'e özgü bir kavramsal yön belirle ve işe başlamadan onu bir cümleyle yaz.",
   "- Tipografi: Inter, Roboto, Arial, Space Grotesk gibi her yerde görülen fontlar yerine karakterli bir başlık fontunu rafine bir metin fontuyla eşleştir; başlık ve gövde arasında en az 3 kat boyut farkı kullan. Seçtiğin fontlar Türkçe karakterleri (ğ ş ı İ ç ö ü) tam desteklemeli.",
-  "- Renk: paleti konunun kendi dünyasından türet. Şu varsayılan kombinasyonlara girme: lacivert/siyah zemin + turuncu ya da amber vurgu; krem zemin + serif + pas rengi; beyaz üstüne mor gradyan; koyu zemin + neon yeşil. Önce 3 farklı palet düşün, en az tahmin edilebilir olanı seç; tutarlı bir tema kur (bir baskın, bir destek, tek keskin vurgu).",
-  "- Teknik çizim / blueprint ızgarası, monospace etiketler ve 01/02 numaralandırma ancak brief açıkça istiyorsa kullanılsın.",
+  "- Renk: brief'te palet varsa hex kodlarına birebir uy. Yoksa paleti konunun kendi dünyasından türet, 2-4 renkle sınırla ve hex kodlarını baştan yaz. Metin/zemin kontrastı küçük yazıda en az 4.5:1, büyük başlıkta en az 3:1 olsun; görsel üstündeki yazıya yarı saydam katman koy.",
+  "- Aşağıdakiler Claude çıktısını ilk bakışta ele veren kalıplar; hiçbirini kullanma: "+(TELL[k]||TELL.diger).join("; ")+".",
+  "- Başlamadan önce bu iş için akla gelen en bariz 5 çözümü kendine listele ve hiçbirini kullanma. Cesareti tek bir imza öğede harca, geri kalanını sade tut.",
   "- Yerleşim: ortalanmış hero + 3'lü kart dizisi yerine içeriğin gerektirdiği bir ızgara; asimetri, büyük boşluk ya da beklenmedik bir hiyerarşi kullan.",
   "- Arka plan: düz renk yerine bağlama uygun atmosfer (katmanlı gradyan, doku, desen).",
   "- Hareket: dağınık mikro animasyonlar yerine iyi kurgulanmış tek güçlü an.",
@@ -626,7 +658,7 @@ function build(){
  L.push("<gorev>",`Sen deneyimli bir tasarım mühendisisin. Yukarıdaki <brief> ile "${c.n}" işini eksiksiz yap.`,
   "1. Önce problemi, kitleyi ve başarı ölçütünü kendi cümlelerinle 2-3 satırda özetle.",
   "2. Gereksinim ve kısıtlara uy; tasarım eksenlerindeki konumları ciddiye al ve her önemli kararı brief'teki bir maddeye dayandır.",
-  "3. İşi üret.",
+  ...(S.yon3?["3. Önce birbirinden radikal farklı 3 yön öner (her biri: ad, 4 hex, font çifti, imza öğe, tek cümle gerekçe) ve seçmemi bekle. Seçince işi üret."]:["3. İşi üret."]),
   "4. Teslim etmeden önce <kabul_kriterleri> listesini tek tek kontrol et; geçmeyen maddeyi düzelt ve listeyi işaretlenmiş hâliyle sonda göster.",
   "</gorev>");
  return {text:L.join("\n"),filled};
@@ -637,10 +669,12 @@ function result(){
  app.innerHTML=`<div class="stepper">${steps().map((_,i)=>`<i class="done" data-i="${i}"></i>`).join("")}<i class="now"></i></div>
  <div class="meta"><span>${CATS[S.cat].i} ${CATS[S.cat].n}</span><span>${n+1} / ${n+1}</span></div>
  <h1>Promptun hazır</h1><div class="stat"><div><b>${filled}</b>cevap</div><div><b>${S.images.length}</b>görsel</div><div><b>${S.skills.size}</b>skill</div></div>
+ <label class="yon3"><input type="checkbox" id="y3" ${S.yon3?"checked":""}> Önce 3 farklı yön önersin, ben seçeyim</label>
+ ${S.skills.size?`<div class="help" style="margin:6px 0">Skill'ler: <b>${[...S.skills].join(", ")}</b></div>`:""}
  <pre id="out"></pre><div class="row"><button class="btn acc" id="cp">📋 Kopyala</button><button class="btn sec" id="dl" style="flex:1">⬇ .txt indir</button></div>
  ${S.images.length?`<div class="warn">📎 Görseller prompta gömülmez. Claude'a yapıştırırken <b>${S.images.length} görseli de aynı sırayla ekle</b>.</div>`:""}
  ${filled<5?`<div class="warn">Az soru cevapladın. Daha çok cevap verirsen sonuç da daha sana özel olur. Adımlara dokunarak geri dönebilirsin.</div>`:""}`;
- $("#out").textContent=text;
+ $("#out").textContent=text;$("#y3").onchange=e=>{S.yon3=e.target.checked;save();result()};
  app.querySelectorAll(".stepper i[data-i]").forEach(x=>x.onclick=()=>{S.i=+x.dataset.i;show()});
  $("#cp").onclick=async()=>{try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement("textarea");t.value=text;document.body.appendChild(t);t.select();document.execCommand("copy");t.remove()}toast("Kopyalandı ✓")};
  $("#dl").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/plain"}));a.download="prompt.txt";a.click()};
@@ -764,12 +798,15 @@ function vStop(){if(!V)return;V.on=false;try{V.rec&&V.rec.abort()}catch(e){}V.re
 
 /* ===== ADRESTEN DOLDURMA (Siri / Kestirmeler) ===== */
 const SIRI_SKIP=["surec","oncelik","onay","rakip"];
-function siriList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=steps(),L=[],seen=new Set();
+const SIRI_CORE=["gercek","aksiyon","estetik","palet","wont","hayal"];
+function siriList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=steps(),L=[],seen=new Set(),all={};
+ st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>{if(!all[q.id])all[q.id]={q,t:x[0]}})});
  const add=(q,t)=>{if(seen.has(q.id)||q.t==="scale"||SIRI_SKIP.includes(q.id))return;seen.add(q.id);L.push({q,key:k+"|"+(q._t||t)+"|"+q.id})};
  const first=st.find(x=>Array.isArray(x));if(first)qsOf(first).slice(0,4).forEach(q=>add(q,first[0]));
- st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>{if(q.k)add(q,x[0])})});
- S.cat=pc;S.mode=pm;return L.slice(0,17)}
-const SIRI_TXT={gercek:"İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+ if(all.qr)add(all.qr.q,all.qr.t);
+ SIRI_CORE.forEach(id=>{if(all[id])add(all[id].q,all[id].t)});
+ S.cat=pc;S.mode=pm;return L}
+const SIRI_TXT={aksiyon:"Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",qr:"Afişte QR kod olsun mu? Olacaksa neye gitsin? Yoksa geç de.",gercek:"İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
  estetik:"Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",palet:"Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
  smp:"Kitle tek bir şey hatırlasa, o ne olmalı?",hayal:"Kafandaki tasarımı serbestçe anlat.",his:"İlk 5 saniyede ne hissetmeliler?"};
 function siriText(q,i,n){let t=SIRI_TXT[q.id];
@@ -779,12 +816,12 @@ function siriText(q,i,n){let t=SIRI_TXT[q.id];
 function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).replace(/\+/g," "));if(!h||!h.includes("="))return false;
  const P={};h.split("&").forEach(x=>{const i=x.indexOf("=");if(i>0)P[norm(x.slice(0,i))]=x.slice(i+1).trim()});
  let k=P.kat;if(k){const n=norm(k);k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)))}if(!k)return false;
- if(P.mod)S.mode=/hızlı|hizli/.test(norm(P.mod))?"hizli":"detay";
+ if(P.yon3)S.yon3=true;if(P.mod)S.mode=/hızlı|hizli/.test(norm(P.mod))?"hizli":"detay";
  S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");
  const all=[];steps().forEach(st=>{if(Array.isArray(st))qsOf(st).forEach(q=>all.push({q,key:k+"|"+(q._t||st[0])+"|"+q.id}))});
  let n=0;S.anlat=P.anlat||"";if(S.anlat)n++;
  if(P.skill){const L=P.skill.split(/\n|,/).map(x=>x.split(" — ")[0].trim()).filter(Boolean);if(L.length)S.skills=new Set(L)}
- S.siri=!!P.cevaplar;if(P.cevaplar){S.mode="detay";const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++;else{S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+x.q.l.replace(/\?$/,"")+": "+a;n++}})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar","skill"].includes(id))return;
+ S.siri=!!P.cevaplar;if(P.cevaplar){S.mode="detay";const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++;else{S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+x.q.l.replace(/\?$/,"")+": "+a;n++}})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar","skill","yon3","v"].includes(id))return;
   let hit=all.find(x=>norm(x.q.id)===id);
   if(hit&&apply(hit.q,hit.key,val)!=null)n++});
  history.replaceState(null,"",location.pathname);
