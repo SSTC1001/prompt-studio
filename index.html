@@ -516,7 +516,7 @@ function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  app.querySelectorAll(".mode button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;paint();home()});paint();
  const sv=load();if(sv&&sv.cat&&CATS[sv.cat]){const r=app.querySelector("#res");r.innerHTML=`<div class="resume"><span>${CATS[sv.cat].i} Yarım kalan: ${CATS[sv.cat].n}</span><button>Devam et</button></div>`;
   r.querySelector("button").onclick=()=>{S=Object.assign(S,sv,{ch:Object.fromEntries(Object.entries(sv.ch).map(([k,v])=>[k,new Set(v)])),skills:new Set(sv.skills),images:[]});show()}}
-$("#chatgo").onclick=hfStart;
+$("#chatgo").onclick=()=>{hfStart().catch(e=>{app.insertAdjacentHTML("afterbegin",`<div class="warn">Sesli mod başlatılamadı: ${esc(e&&e.message||String(e))}</div>`)})};
  const c=app.querySelector(".cats");
  Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat";
   const pc=S.cat;S.cat=k;const n=steps().length;S.cat=pc;b.innerHTML=`<span class="ic">${v.i}</span><span class="nm">${v.n}</span><span class="ct">${n} adım</span>`;
