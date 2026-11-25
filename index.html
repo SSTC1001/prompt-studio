@@ -783,7 +783,8 @@ function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).repl
  S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");
  const all=[];steps().forEach(st=>{if(Array.isArray(st))qsOf(st).forEach(q=>all.push({q,key:k+"|"+(q._t||st[0])+"|"+q.id}))});
  let n=0;S.anlat=P.anlat||"";if(S.anlat)n++;
- S.siri=!!P.cevaplar;if(P.cevaplar){S.mode="detay";const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++;else{S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+x.q.l.replace(/\?$/,"")+": "+a;n++}})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar"].includes(id))return;
+ if(P.skill){const L=P.skill.split(/\n|,/).map(x=>x.split(" — ")[0].trim()).filter(Boolean);if(L.length)S.skills=new Set(L)}
+ S.siri=!!P.cevaplar;if(P.cevaplar){S.mode="detay";const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++;else{S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+x.q.l.replace(/\?$/,"")+": "+a;n++}})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar","skill"].includes(id))return;
   let hit=all.find(x=>norm(x.q.id)===id);
   if(hit&&apply(hit.q,hit.key,val)!=null)n++});
  history.replaceState(null,"",location.pathname);

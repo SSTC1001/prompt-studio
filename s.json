@@ -1,0 +1,97 @@
+{
+ "sunum": [
+  "Slides (artifact) — Düzenlenebilir sunum",
+  "pptx — PowerPoint dosyası",
+  "dataviz — Şık, tutarlı grafikler",
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "theme-factory — Hazır/özel tema setleri",
+  "deep-research — Çok kaynaklı araştırma",
+  "canvas-design — Poster, sanat, statik görsel"
+ ],
+ "site": [
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "web-artifacts-builder — Çok bileşenli React/HTML uygulamalar",
+  "theme-factory — Hazır/özel tema setleri",
+  "brand-guidelines — Marka kurallarına uygun çıktı",
+  "canvas-design — Poster, sanat, statik görsel",
+  "deep-research — Çok kaynaklı araştırma"
+ ],
+ "uygulama": [
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "web-artifacts-builder — Çok bileşenli React/HTML uygulamalar",
+  "Design (artifact) — Düzenlenebilir tasarım tuvali",
+  "theme-factory — Hazır/özel tema setleri",
+  "dataviz — Şık, tutarlı grafikler",
+  "deep-research — Çok kaynaklı araştırma",
+  "canvas-design — Poster, sanat, statik görsel"
+ ],
+ "afiş": [
+  "Design (artifact) — Düzenlenebilir tasarım tuvali",
+  "canvas-design — Poster, sanat, statik görsel",
+  "algorithmic-art — Kodla generatif sanat",
+  "theme-factory — Hazır/özel tema setleri",
+  "pdf — PDF oluşturma / form",
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "deep-research — Çok kaynaklı araştırma"
+ ],
+ "logo": [
+  "brand-guidelines — Marka kurallarına uygun çıktı",
+  "Design System (artifact) — Kalıcı marka sistemi",
+  "canvas-design — Poster, sanat, statik görsel",
+  "theme-factory — Hazır/özel tema setleri",
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "deep-research — Çok kaynaklı araştırma"
+ ],
+ "shorts": [
+  "video-making — Video üretim akışı",
+  "capcut-tts-turkce — CapCut Türkçe kalın erkek sesi",
+  "youtube-studio-shorts-yukle — Shorts yükleme ve zamanlama",
+  "vidIQ — YouTube anahtar kelime ve trend",
+  "Motion (artifact) — Kısa animasyon / film",
+  "deep-research — Çok kaynaklı araştırma",
+  "theme-factory — Hazır/özel tema setleri",
+  "canvas-design — Poster, sanat, statik görsel"
+ ],
+ "belge": [
+  "docs — Paylaşılabilir Claude belgesi",
+  "docx — Word dosyası",
+  "pdf — PDF oluşturma / form",
+  "dataviz — Şık, tutarlı grafikler",
+  "deep-research — Çok kaynaklı araştırma",
+  "xlsx — Excel tablo ve formül",
+  "theme-factory — Hazır/özel tema setleri",
+  "canvas-design — Poster, sanat, statik görsel"
+ ],
+ "oyun": [
+  "web-artifacts-builder — Çok bileşenli React/HTML uygulamalar",
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "algorithmic-art — Kodla generatif sanat",
+  "canvas-design — Poster, sanat, statik görsel",
+  "deep-research — Çok kaynaklı araştırma",
+  "theme-factory — Hazır/özel tema setleri"
+ ],
+ "dashboard": [
+  "Dashboard (artifact) — Canlı gösterge paneli",
+  "dataviz — Şık, tutarlı grafikler",
+  "xlsx — Excel tablo ve formül",
+  "Sheets (artifact) — Düzenlenebilir tablo",
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "deep-research — Çok kaynaklı araştırma",
+  "theme-factory — Hazır/özel tema setleri",
+  "canvas-design — Poster, sanat, statik görsel"
+ ],
+ "eposta": [
+  "docs — Paylaşılabilir Claude belgesi",
+  "deep-research — Çok kaynaklı araştırma",
+  "theme-factory — Hazır/özel tema setleri",
+  "canvas-design — Poster, sanat, statik görsel"
+ ],
+ "diğer": [
+  "skill-creator — Bu işi tekrar kullanılabilir skill'e çevir",
+  "deep-research — Çok kaynaklı araştırma",
+  "frontend-design — Şablon gibi durmayan özgün arayüz",
+  "docs — Paylaşılabilir Claude belgesi",
+  "theme-factory — Hazır/özel tema setleri",
+  "canvas-design — Poster, sanat, statik görsel"
+ ]
+}
