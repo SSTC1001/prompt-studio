@@ -155,6 +155,7 @@ const B = {
   {k:1,id:"tekFikir",l:"Bunu benzerlerinden ayıracak TEK cesur fikir",t:"textarea",w:"Akılda kalan işlerin hepsinde bir 'büyük fikir' vardır.",p:"Örn: Her slayt bir uçak kokpit göstergesi gibi okunsun"}
  ]],
  GEREKSINIM:["Gereksinimler (olmazsa olmaz → olmasın)",[
+  {k:1,id:"gercek",l:"İşte görünecek gerçek isimler, marka adı ve iletişim bilgileri",t:"textarea",w:"Claude gerçek isim ve iletişim bilgisini bilemez; yazılmazsa [ADINIZ] gibi boş yer bırakır.",p:"Örn: Ekip: Ali Yılmaz, Ayşe Kaya · @deone_drone · 12 Aralık"},
   {k:1,id:"must",l:"MUTLAKA olmalı",t:"textarea",w:"Kesin gereksinimler pazarlık konusu değildir; önce bunlar karşılanır.",p:"Logo, belirli bilgiler, bölümler, cümleler..."},
   {id:"should",l:"Olsa iyi olur",t:"textarea",w:"Zaman/alan kalırsa eklenecekler. Ayrı tutmak ana işi korur."},
   {k:1,id:"wont",l:"OLMASIN",t:"chips",w:"Yasaklar, jenerik sonucu engellemenin en etkili yoludur.",o:["Mor-mavi gradyan","3'lü kart grid'i","Emoji ikonlar","Ortalanmış klişe hero","Inter / Roboto / Arial","Stok gülen insan fotoğrafı","Glassmorphism","Aşırı yuvarlak köşeler","'İnanılmaz, yenilikçi' kelimeleri","Soruyla açılış","Uzun paragraflar","Gereksiz animasyon","Pasta grafik","Clipart","Space Grotesk (Claude'un yeni klişesi)","Düz tek renk arka plan","Tahmin edilebilir şablon yerleşim","Beyaz üstüne mor"]}
@@ -578,13 +579,17 @@ const KABUL={
  eposta:["Ana istek ilk iki satırda; tek e-posta tek istek.","Konu satırı içeriği ve aciliyeti söylüyor.","Okuru beklemede bırakan belirsiz ifade yok; tarih ve sonraki adım net."],
  diger:["Brief'teki her MUTLAKA maddesi karşılanmış."]
 };
+const YON={est:["Swiss / Bauhaus","Art Deco","Memphis","Brütalist","70'ler Türk plak kapağı","Yeşilçam afişi","Japon minimalizmi","Risograf baskı","Konstrüktivist","Art Nouveau","Y2K","Editoryal dergi","İznik çini","Psikedelik 60'lar","Op-art"],
+ ilham:["müze sergi etiketi","eski bilet / pul","maç programı","ilaç ambalajı","harita / kartografi","bilimsel botanik çizim","tren tarifesi","plak kapağı","sinema afişi","çocuk kitabı illüstrasyonu","sokak tabelası","dergi kapağı"],
+ renk:["sıcak toprak + tek elektrik mavisi","pastel zemin + siyah + tek neon","tek renk tonları (monokrom yeşil)","kırmızı + krem + siyah (konstrüktivist)","mor + hardal","zeytin + pembe","turkuaz + mercan + beyaz (İznik)","sarı zemin + siyah","bordo + açık gri + altın"]};
+function pick(a,seed){return a[Math.abs(seed)%a.length]}
 function build(){
  const k=S.cat,c=CATS[k];let filled=S.anlat?1:0;const brief=[],ref=[],sk=[];
  steps().forEach(st=>{
   if(st==="IMG"){const im=S.images.map((x,i)=>`- Görsel ${i+1} → ${x.role}${x.note?": "+x.note:""}`);
    const ln=S.links.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>"- Link: "+s);
    if(im.length||ln.length)ref.push(...(im.length?["Mesaja eklediğim görseller, sırasıyla:"]:[]),...im,...ln,"Görselleri birebir kopyalama; her birinden yalnızca belirttiğim özelliği al (renk, yerleşim, his). Ortak olup belirtmediğim özellikleri kalıp sanma. 'OLMASIN' etiketli görselin tam tersi yöne git. Referanslar çatışırsa birini ana yön seç, diğerlerinden 1-2 detay al.");return}
-  if(st==="SKILL"){if(S.skills.size)sk.push(...[...S.skills].map(s=>"- "+s),"Bu skill'leri yükle ve talimatlarına uy; mevcut değilse en yakınını kullan ve bunu söyle.");return}
+  if(st==="SKILL"){if(S.skills.size)sk.push(...[...S.skills].map(s=>"- "+s),"Bir skill mevcut değilse en yakınını kullan ve bunu söyle.");return}
   if(st.quick){const g={};st[1].forEach(q=>(g[q._t]=g[q._t]||[]).push(q));Object.entries(g).forEach(([t,qs])=>emit(t,qs));return}
   emit(st[0],qsOf(st))});
  function emit(title,qs){const out=[];
@@ -597,21 +602,25 @@ function build(){
   if(out.length)brief.push("### "+title,...out,"");
  }
  const gorselIs=["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k);
- const kural=[];
+ const kural=[],has=id=>Object.keys(S.v).some(x=>x.endsWith("|"+id)&&S.v[x])||Object.keys(S.ch).some(x=>x.endsWith("|"+id)&&S.ch[x].size);
+ if(gorselIs&&!has("estetik")&&!has("palet")){S.seed=S.seed||(Date.now()/1000|0);const sd=S.seed;
+  brief.push("### Bu iş için seçilen yön (rastgele atandı, buna sadık kal)","- Estetik: "+pick(YON.est,sd),"- İlham alınacak nesne: "+pick(YON.ilham,sd>>3),"- Renk yönü: "+pick(YON.renk,sd>>5),"")}
  if(gorselIs)kural.push(
   "- Açık uçlu tasarım işlerinde varsayılan bir 'ev stiline' kayma eğilimin var. Bunun yerine bu brief'e özgü bir kavramsal yön belirle ve işe başlamadan onu bir cümleyle yaz.",
   "- Tipografi: Inter, Roboto, Arial, Space Grotesk gibi her yerde görülen fontlar yerine karakterli bir başlık fontunu rafine bir metin fontuyla eşleştir; başlık ve gövde arasında en az 3 kat boyut farkı kullan. Seçtiğin fontlar Türkçe karakterleri (ğ ş ı İ ç ö ü) tam desteklemeli.",
-  "- Renk: beyaz üstüne mor gradyan yerine tutarlı bir tema kur (CSS değişkenleriyle); bir baskın renk, destek renkleri ve tek keskin vurgu (yaklaşık 60-30-10).",
+  "- Renk: paleti konunun kendi dünyasından türet. Şu varsayılan kombinasyonlara girme: lacivert/siyah zemin + turuncu ya da amber vurgu; krem zemin + serif + pas rengi; beyaz üstüne mor gradyan; koyu zemin + neon yeşil. Önce 3 farklı palet düşün, en az tahmin edilebilir olanı seç; tutarlı bir tema kur (bir baskın, bir destek, tek keskin vurgu).",
+  "- Teknik çizim / blueprint ızgarası, monospace etiketler ve 01/02 numaralandırma ancak brief açıkça istiyorsa kullanılsın.",
   "- Yerleşim: ortalanmış hero + 3'lü kart dizisi yerine içeriğin gerektirdiği bir ızgara; asimetri, büyük boşluk ya da beklenmedik bir hiyerarşi kullan.",
   "- Arka plan: düz renk yerine bağlama uygun atmosfer (katmanlı gradyan, doku, desen).",
   "- Hareket: dağınık mikro animasyonlar yerine iyi kurgulanmış tek güçlü an.",
   "- İkonlar için emoji yerine tutarlı bir ikon seti veya SVG kullan.");
- kural.push("- Eksik bilgi varsa durup sorma; makul bir varsayım yap ve teslimin sonunda varsayımları listele.");
+ kural.push("- Gerçek isim, marka adı, tarih ve iletişim bilgisi uydurma; brief’te varsa birebir kullan. Yoksa o öğeyi tasarımdan çıkar, [ADINIZ] gibi köşeli parantezli yer tutucu bırakma.","- Diğer eksik bilgilerde durup sorma; makul bir varsayım yap ve teslimin sonunda varsayımları listele.");
+ if(S.siri)kural.push("- Cevaplar Siri ile sesle dikte edildi: özel isimlerde duyma hatası olabilir. Marka ve ürün adlarına dokunma; yalnızca anlamsız ya da bariz yanlış duyulmuş genel kelimeleri düzelt ve sonda hangi kelimeyi neye düzelttiğini yaz.");
  const kabul=[...(KABUL[k]||KABUL.diger),"Brief'teki her MUTLAKA maddesi karşılanmış, hiçbir OLMASIN maddesi yok.","Sonuç, aynı konuda Claude ile yapılmış sıradan bir işten ilk bakışta ayırt edilebiliyor."];
  const L=[];
  L.push("<brief>",...(S.anlat?["### Benim anlatımım (sesle söyledim)",S.anlat,""]:[]),...brief,"</brief>","");
  if(ref.length)L.push("<referanslar>",...ref,"</referanslar>","");
- if(sk.length)L.push("<skilller>",...sk,"</skilller>","");
+ if(sk.length)L.push("<skilller>","İşe başlamadan ÖNCE aşağıdaki her skill’in SKILL.md dosyasını Skill aracıyla yükle ve talimatlarına uy. Teslimde hangi skill’leri kullandığını tek satırla yaz.",...sk,"</skilller>","");
  L.push("<kurallar>",...kural,"</kurallar>","");
  L.push("<kabul_kriterleri>",...kabul.map(x=>"- [ ] "+x),"</kabul_kriterleri>","");
  L.push("<gorev>",`Sen deneyimli bir tasarım mühendisisin. Yukarıdaki <brief> ile "${c.n}" işini eksiksiz yap.`,
@@ -759,8 +768,8 @@ function siriList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=st
  const add=(q,t)=>{if(seen.has(q.id)||q.t==="scale"||SIRI_SKIP.includes(q.id))return;seen.add(q.id);L.push({q,key:k+"|"+(q._t||t)+"|"+q.id})};
  const first=st.find(x=>Array.isArray(x));if(first)qsOf(first).slice(0,4).forEach(q=>add(q,first[0]));
  st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>{if(q.k)add(q,x[0])})});
- S.cat=pc;S.mode=pm;return L.slice(0,16)}
-const SIRI_TXT={tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+ S.cat=pc;S.mode=pm;return L.slice(0,17)}
+const SIRI_TXT={gercek:"İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
  estetik:"Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",palet:"Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
  smp:"Kitle tek bir şey hatırlasa, o ne olmalı?",hayal:"Kafandaki tasarımı serbestçe anlat.",his:"İlk 5 saniyede ne hissetmeliler?"};
 function siriText(q,i,n){let t=SIRI_TXT[q.id];
@@ -771,10 +780,10 @@ function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).repl
  const P={};h.split("&").forEach(x=>{const i=x.indexOf("=");if(i>0)P[norm(x.slice(0,i))]=x.slice(i+1).trim()});
  let k=P.kat;if(k){const n=norm(k);k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)))}if(!k)return false;
  if(P.mod)S.mode=/hızlı|hizli/.test(norm(P.mod))?"hizli":"detay";
- S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));
+ S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");
  const all=[];steps().forEach(st=>{if(Array.isArray(st))qsOf(st).forEach(q=>all.push({q,key:k+"|"+(q._t||st[0])+"|"+q.id}))});
  let n=0;S.anlat=P.anlat||"";if(S.anlat)n++;
- if(P.cevaplar){S.mode="detay";const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++;else{S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+x.q.l.replace(/\?$/,"")+": "+a;n++}})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar"].includes(id))return;
+ S.siri=!!P.cevaplar;if(P.cevaplar){S.mode="detay";const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++;else{S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+x.q.l.replace(/\?$/,"")+": "+a;n++}})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar"].includes(id))return;
   let hit=all.find(x=>norm(x.q.id)===id);
   if(hit&&apply(hit.q,hit.key,val)!=null)n++});
  history.replaceState(null,"",location.pathname);

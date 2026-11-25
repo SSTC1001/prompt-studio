@@ -1,6 +1,6 @@
 {
  "sunum": [
-  "Toplam 15 soru var. Atlamak istediğinde geç de. Soru 1. Sunumun konusu ne olsun?",
+  "Toplam 16 soru var. Atlamak istediğinde geç de. Soru 1. Sunumun konusu ne olsun?",
   "Soru 2. Nerede sunulacak? Örneğin: Ders / akademik, Jüri, İş toplantısı, Yatırımcı (pitch), Konferans.",
   "Soru 3. Dinleyicinin konu bilgisi ne olsun? Örneğin: Hiç bilmiyor, Temel, Uzman (hoca, mühendis), Karışık.",
   "Soru 4. Süre ne olsun?",
@@ -10,14 +10,15 @@
   "Soru 8. Bu iş ne olursa başarılı sayılır?",
   "Soru 9. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 10. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 11. Mutlaka olması gereken ne var?",
-  "Soru 12. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 13. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 14. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 15. Kafandaki tasarımı serbestçe anlat."
+  "Soru 11. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 12. Mutlaka olması gereken ne var?",
+  "Soru 13. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 14. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 15. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+  "Soru 16. Kafandaki tasarımı serbestçe anlat."
  ],
  "site": [
-  "Toplam 13 soru var. Atlamak istediğinde geç de. Soru 1. Site türü ne olsun? Örneğin: Landing page, Portfolyo, Kurumsal, Blog, E-ticaret.",
+  "Toplam 14 soru var. Atlamak istediğinde geç de. Soru 1. Site türü ne olsun? Örneğin: Landing page, Portfolyo, Kurumsal, Blog, E-ticaret.",
   "Soru 2. Marka adı + tek cümlelik tanım ne olsun?",
   "Soru 3. Çözülecek asıl problem ne?",
   "Soru 4. Kim kullanacak / görecek?",
@@ -25,14 +26,15 @@
   "Soru 6. Bu iş ne olursa başarılı sayılır?",
   "Soru 7. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 8. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 9. Mutlaka olması gereken ne var?",
-  "Soru 10. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 11. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 12. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 13. Kafandaki tasarımı serbestçe anlat."
+  "Soru 9. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 10. Mutlaka olması gereken ne var?",
+  "Soru 11. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 12. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 13. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+  "Soru 14. Kafandaki tasarımı serbestçe anlat."
  ],
  "uygulama": [
-  "Toplam 13 soru var. Atlamak istediğinde geç de. Soru 1. Uygulama ne yapıyor?",
+  "Toplam 14 soru var. Atlamak istediğinde geç de. Soru 1. Uygulama ne yapıyor?",
   "Soru 2. Hangi problemi çözüyor?",
   "Soru 3. İlham aldığın uygulamalar ne olsun?",
   "Soru 4. Kim kullanacak / görecek?",
@@ -40,14 +42,15 @@
   "Soru 6. Bu iş ne olursa başarılı sayılır?",
   "Soru 7. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 8. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 9. Mutlaka olması gereken ne var?",
-  "Soru 10. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 11. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 12. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 13. Kafandaki tasarımı serbestçe anlat."
+  "Soru 9. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 10. Mutlaka olması gereken ne var?",
+  "Soru 11. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 12. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 13. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+  "Soru 14. Kafandaki tasarımı serbestçe anlat."
  ],
  "afiş": [
-  "Toplam 15 soru var. Atlamak istediğinde geç de. Soru 1. Ne için? Örneğin: Etkinlik, Konser, Kampanya, Duyuru, Film afişi tarzı.",
+  "Toplam 16 soru var. Atlamak istediğinde geç de. Soru 1. Ne için? Örneğin: Etkinlik, Konser, Kampanya, Duyuru, Film afişi tarzı.",
   "Soru 2. Ana başlık ne olsun?",
   "Soru 3. Olması gereken bilgiler ne olsun?",
   "Soru 4. Nereden görülecek? Örneğin: Uzaktan (10 m+), Orta (3-6 m), Yakından / elde, Telefon ekranında.",
@@ -57,14 +60,15 @@
   "Soru 8. Bu iş ne olursa başarılı sayılır?",
   "Soru 9. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 10. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 11. Mutlaka olması gereken ne var?",
-  "Soru 12. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 13. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 14. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 15. Kafandaki tasarımı serbestçe anlat."
+  "Soru 11. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 12. Mutlaka olması gereken ne var?",
+  "Soru 13. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 14. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 15. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+  "Soru 16. Kafandaki tasarımı serbestçe anlat."
  ],
  "logo": [
-  "Toplam 15 soru var. Atlamak istediğinde geç de. Soru 1. Marka adı ve sektör ne olsun?",
+  "Toplam 16 soru var. Atlamak istediğinde geç de. Soru 1. Marka adı ve sektör ne olsun?",
   "Soru 2. Markanın hikâyesi ne olsun?",
   "Soru 3. Sıfırdan mı, yenileme mi? Örneğin: Sıfırdan yeni marka, Mevcut logoyu yenileme, Mevcut logoyu hafif düzeltme.",
   "Soru 4. Marka arketipi ne olsun? Örneğin: Masum, Bilge, Kâşif, Asi, Sihirbaz.",
@@ -74,14 +78,15 @@
   "Soru 8. Bu iş ne olursa başarılı sayılır?",
   "Soru 9. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 10. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 11. Mutlaka olması gereken ne var?",
-  "Soru 12. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 13. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 14. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 15. Kafandaki tasarımı serbestçe anlat."
+  "Soru 11. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 12. Mutlaka olması gereken ne var?",
+  "Soru 13. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 14. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 15. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+  "Soru 16. Kafandaki tasarımı serbestçe anlat."
  ],
  "shorts": [
-  "Toplam 13 soru var. Atlamak istediğinde geç de. Soru 1. Kanal nişi ne olsun? Örneğin: İlginç bilgiler, Korku hikâyeleri, Oyun, Gizli tarih, Perde arkası.",
+  "Toplam 14 soru var. Atlamak istediğinde geç de. Soru 1. Kanal nişi ne olsun? Örneğin: İlginç bilgiler, Korku hikâyeleri, Oyun, Gizli tarih, Perde arkası.",
   "Soru 2. Kanal adı ne olsun?",
   "Soru 3. Videonun konusu ne olsun?",
   "Soru 4. Konu araştırılsın mı? Örneğin: Evet, doğru bilgi + kaynak, Trend konu öner, Konuyu ben verdim.",
@@ -91,12 +96,13 @@
   "Soru 8. Bu iş ne olursa başarılı sayılır?",
   "Soru 9. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 10. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 11. Mutlaka olması gereken ne var?",
-  "Soru 12. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 13. Kafandaki tasarımı serbestçe anlat."
+  "Soru 11. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 12. Mutlaka olması gereken ne var?",
+  "Soru 13. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 14. Kafandaki tasarımı serbestçe anlat."
  ],
  "belge": [
-  "Toplam 13 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Örneğin: Rapor, Proje raporu, Ödev, CV, Ön yazı.",
+  "Toplam 14 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Örneğin: Rapor, Proje raporu, Ödev, CV, Ön yazı.",
   "Soru 2. Kime gidecek?",
   "Soru 3. Okurun teknik seviyesi ne olsun? Örneğin: Uzman (terimleri bilir), Teknik ama alan dışı, Teknik olmayan.",
   "Soru 4. Konu ve ana mesaj ne olsun?",
@@ -106,12 +112,13 @@
   "Soru 8. Bu iş ne olursa başarılı sayılır?",
   "Soru 9. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 10. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 11. Mutlaka olması gereken ne var?",
-  "Soru 12. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 13. Kafandaki tasarımı serbestçe anlat."
+  "Soru 11. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 12. Mutlaka olması gereken ne var?",
+  "Soru 13. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 14. Kafandaki tasarımı serbestçe anlat."
  ],
  "oyun": [
-  "Toplam 14 soru var. Atlamak istediğinde geç de. Soru 1. Oyunu tek cümleyle anlat ne olsun?",
+  "Toplam 15 soru var. Atlamak istediğinde geç de. Soru 1. Oyunu tek cümleyle anlat ne olsun?",
   "Soru 2. Tür ne olsun? Örneğin: Bulmaca, Platform, Quiz, Kelime, Arcade.",
   "Soru 3. Tema / dünya ne olsun?",
   "Soru 4. İlk 5 saniyede ne hissetmeliler?",
@@ -120,14 +127,15 @@
   "Soru 7. Bu iş ne olursa başarılı sayılır?",
   "Soru 8. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 9. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 10. Mutlaka olması gereken ne var?",
-  "Soru 11. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 12. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 13. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 14. Kafandaki tasarımı serbestçe anlat."
+  "Soru 10. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 11. Mutlaka olması gereken ne var?",
+  "Soru 12. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 13. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 14. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+  "Soru 15. Kafandaki tasarımı serbestçe anlat."
  ],
  "dashboard": [
-  "Toplam 11 soru var. Atlamak istediğinde geç de. Soru 1. Hangi veri?",
+  "Toplam 12 soru var. Atlamak istediğinde geç de. Soru 1. Hangi veri?",
   "Soru 2. Güncellenme ne olsun? Örneğin: Tek seferlik, Elle güncelleyeceğim, Otomatik.",
   "Soru 3. Çözülecek asıl problem ne?",
   "Soru 4. Kim kullanacak / görecek?",
@@ -135,9 +143,10 @@
   "Soru 6. Bu iş ne olursa başarılı sayılır?",
   "Soru 7. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 8. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 9. Mutlaka olması gereken ne var?",
-  "Soru 10. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 11. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle."
+  "Soru 9. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 10. Mutlaka olması gereken ne var?",
+  "Soru 11. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 12. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle."
  ],
  "eposta": [
   "Toplam 7 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Örneğin: Resmi e-posta, Hoca yazışması, İş başvurusu, Takip, Rica.",
@@ -149,7 +158,7 @@
   "Soru 7. Bunu benzerlerinden ayıracak tek cesur fikir ne?"
  ],
  "diğer": [
-  "Toplam 12 soru var. Atlamak istediğinde geç de. Soru 1. Ne yaptırmak istiyorsun? Detaylı anlat ne olsun?",
+  "Toplam 13 soru var. Atlamak istediğinde geç de. Soru 1. Ne yaptırmak istiyorsun? Detaylı anlat ne olsun?",
   "Soru 2. Sonunda elinde ne olsun?",
   "Soru 3. Çözülecek asıl problem ne?",
   "Soru 4. Kim kullanacak / görecek?",
@@ -157,9 +166,10 @@
   "Soru 6. Bu iş ne olursa başarılı sayılır?",
   "Soru 7. Kitle tek bir şey hatırlasa, o ne olmalı?",
   "Soru 8. Bunu benzerlerinden ayıracak tek cesur fikir ne?",
-  "Soru 9. Mutlaka olması gereken ne var?",
-  "Soru 10. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
-  "Soru 11. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 12. Kafandaki tasarımı serbestçe anlat."
+  "Soru 9. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
+  "Soru 10. Mutlaka olması gereken ne var?",
+  "Soru 11. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 12. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 13. Kafandaki tasarımı serbestçe anlat."
  ]
 }
