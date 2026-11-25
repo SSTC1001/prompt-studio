@@ -511,12 +511,12 @@ function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,
 function load(){try{return JSON.parse(localStorage.getItem("pa_state")||"null")}catch(e){return null}}
 function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  $("#nav").classList.add("hide");$("#restart").classList.add("hide");
- app.innerHTML=`<h1>Ne yaptırmak istiyorsun?</h1><p class="sub">Seç, soruları cevapla, sonunda Claude'a tek mesajda yapıştıracağın eksiksiz bir prompt al.</p><button class="vbig chatgo" id="chatgo">🎧 Sesli soru-cevap<small>Sorular sesli okunur, sen konuşursun, kendiliğinden ilerler. Butona basmak yok.</small></button><div class="mode"><button data-m="hizli">⚡ Hızlı<small>Sadece temel sorular</small></button><button data-m="detay">🔍 Detaylı<small>Tasarım mühendisi brief'i</small></button></div><button class="vbig" id="vgo">🎙️ Sesli başlat<small>Sorular sesli sorulur; konuşarak ya da yazarak cevaplarsın</small></button><div id="res"></div><div class="cats"></div>`;
+ app.innerHTML=`<h1>Ne yaptırmak istiyorsun?</h1><p class="sub">Seç, soruları cevapla, sonunda Claude'a tek mesajda yapıştıracağın eksiksiz bir prompt al.</p><button class="vbig chatgo" id="chatgo">🎧 Sesli soru-cevap<small>Sorular sesli okunur, sen konuşursun, kendiliğinden ilerler. Butona basmak yok.</small></button><div class="mode"><button data-m="hizli">⚡ Hızlı<small>Sadece temel sorular</small></button><button data-m="detay">🔍 Detaylı<small>Tasarım mühendisi brief'i</small></button></div><div id="res"></div><div class="cats"></div>`;
  const paint=()=>app.querySelectorAll(".mode button").forEach(b=>b.classList.toggle("on",b.dataset.m===S.mode));
  app.querySelectorAll(".mode button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;paint();home()});paint();
  const sv=load();if(sv&&sv.cat&&CATS[sv.cat]){const r=app.querySelector("#res");r.innerHTML=`<div class="resume"><span>${CATS[sv.cat].i} Yarım kalan: ${CATS[sv.cat].n}</span><button>Devam et</button></div>`;
   r.querySelector("button").onclick=()=>{S=Object.assign(S,sv,{ch:Object.fromEntries(Object.entries(sv.ch).map(([k,v])=>[k,new Set(v)])),skills:new Set(sv.skills),images:[]});show()}}
- $("#vgo").onclick=vStart;$("#chatgo").onclick=hfStart;
+$("#chatgo").onclick=hfStart;
  const c=app.querySelector(".cats");
  Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat";
   const pc=S.cat;S.cat=k;const n=steps().length;S.cat=pc;b.innerHTML=`<span class="ic">${v.i}</span><span class="nm">${v.n}</span><span class="ct">${n} adım</span>`;
