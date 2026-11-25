@@ -754,13 +754,20 @@ function vErr(a){const e=a.split(":")[1];vStop();toast(e==="not-allowed"||e==="s
 function vStop(){if(!V)return;V.on=false;try{V.rec&&V.rec.abort()}catch(e){}V.rec=null;if(V.cancel){V.cancel();V.cancel=null}try{V.rec&&V.rec.abort()}catch(e){}if(window.speechSynthesis)speechSynthesis.cancel();const b=$("#vbar");if(b)b.remove();app.querySelectorAll(".vnow").forEach(x=>x.classList.remove("vnow"))}
 
 /* ===== ADRESTEN DOLDURMA (Siri / Kestirmeler) ===== */
+function siriList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="hizli";const st=steps()[0];
+ const L=qsOf(st).map(q=>({q,key:k+"|"+(q._t||st[0])+"|"+q.id})).slice(0,12);S.cat=pc;S.mode=pm;return L}
+function siriText(q){let t=q.l.replace(/↔/g,"mı");
+ if(q.t==="scale")t=q.a+" ile "+q.b+" arası, 1'den 5'e kaç? 1 "+q.a+", 5 "+q.b+".";
+ else if(q.t==="select"||q.t==="chips"||q.t==="palette"){const o=q.t==="palette"?PALETS.map(p=>p.n):q.o;t+=" Seçenekler: "+o.slice(0,6).join(", ")+(o.length>6?" ve diğerleri":"")+"."}
+ return t+" Geçmek için geç de."}
 function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).replace(/\+/g," "));if(!h||!h.includes("="))return false;
  const P={};h.split("&").forEach(x=>{const i=x.indexOf("=");if(i>0)P[norm(x.slice(0,i))]=x.slice(i+1).trim()});
  let k=P.kat;if(k){const n=norm(k);k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)))}if(!k)return false;
  if(P.mod)S.mode=/hızlı|hizli/.test(norm(P.mod))?"hizli":"detay";
  S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));
  const all=[];steps().forEach(st=>{if(Array.isArray(st))qsOf(st).forEach(q=>all.push({q,key:k+"|"+(q._t||st[0])+"|"+q.id}))});
- let n=0;S.anlat=P.anlat||"";if(S.anlat)n++;Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli"].includes(id))return;
+ let n=0;S.anlat=P.anlat||"";if(S.anlat)n++;
+ if(P.cevaplar){const A=P.cevaplar.split(/\n|\r|§/);siriList(k).forEach((x,j)=>{const a=(A[j]||"").trim();if(!a||/^(geç|gec|atla|pas|boş|yok|bilmiyorum)\.?$/i.test(a))return;if(apply(x.q,x.key,a)!=null)n++})}Object.entries(P).forEach(([id,val])=>{if(!val||["kat","mod","sonuc","anlat","sesli","cevaplar"].includes(id))return;
   let hit=all.find(x=>norm(x.q.id)===id);
   if(hit&&apply(hit.q,hit.key,val)!=null)n++});
  history.replaceState(null,"",location.pathname);
