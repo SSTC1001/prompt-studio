@@ -124,6 +124,23 @@ pre{white-space:pre-wrap;background:#1b1a17;color:#f3efe6;border-radius:14px;pad
 .mres{font-size:13.5px;margin:0 0 12px;padding:0 4px}.mres:empty{display:none}.mres.ok{color:#1f7a3f}.mres.bad{color:#b3261e}
 #vgate{position:fixed;inset:0;z-index:80;background:rgba(20,18,15,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}#vgate button{width:min(100%,420px);padding:22px;border:0;border-radius:20px;background:var(--acc);color:#fff;font:700 20px 'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;gap:6px;cursor:pointer}#vgate small{font-weight:500;font-size:13.5px;opacity:.9}#vgate a{color:#fff;text-decoration:underline;font-size:15px;cursor:pointer}
 .aimic{margin-top:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--ink);background:#fff;font:inherit;font-size:14px}.aimic.on{background:#c8322b;color:#fff;border-color:#c8322b}.aist{margin-left:8px;font-size:13px;opacity:.75}
+.chatgo{margin-bottom:14px}.chatgo small{display:block;font-weight:400;font-size:13px;opacity:.8}
+.chat{display:flex;flex-direction:column;min-height:70vh}.chead{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mute);margin-bottom:8px}
+#clog{display:flex;flex-direction:column;gap:10px;padding-bottom:260px}
+.msg{max-width:86%;padding:11px 14px;border-radius:18px;font-size:15.5px;line-height:1.45}
+.msg.bot{background:var(--card);border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:6px}
+.msg.me{background:var(--ink);color:#fff;align-self:flex-end;border-bottom-right-radius:6px}
+.msg .why2{font-size:13px;color:var(--mute);margin-top:4px}.msg .ex{font-size:13px;margin-top:6px;padding:6px 9px;background:var(--bg);border-radius:9px}
+.cbar{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:10px 12px calc(10px + env(safe-area-inset-bottom));z-index:20;max-width:860px;margin:0 auto}
+#copts{display:flex;flex-wrap:wrap;gap:7px;max-height:34vh;overflow-y:auto;margin-bottom:8px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font:500 14px 'DM Sans',system-ui,sans-serif;cursor:pointer;text-align:left}
+.chip small{display:block;font-size:11.5px;color:var(--mute)}.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}.chip.on small{color:#ddd}
+.chip.done{background:var(--acc);color:#fff;border-color:var(--acc);font-weight:700}
+.chip.pal i{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:-3px;border:1px solid #0002;vertical-align:-2px}.msg.me i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:-2px}
+.crow{display:flex;gap:7px;align-items:flex-end}.crow textarea{flex:1;min-height:44px;max-height:140px;border-radius:14px;padding:11px 13px;font:inherit;border:1px solid var(--line);resize:none}
+.crow #cmic .aimic{margin:0;height:44px;padding:0 13px}.crow #cmic .aist{display:none}.crow .btn{height:44px;padding:0;flex:0 0 52px;width:52px;min-width:0}.crow #cmic{flex:0 0 auto}
+.crow2{display:flex;justify-content:space-between;margin-top:4px}
+#cmic .gk{position:absolute;left:12px;right:12px;bottom:100%;background:var(--card);padding:10px;border:1px solid var(--line);border-radius:12px}
 </style>
 </head>
 <body>
@@ -489,12 +506,12 @@ function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,
 function load(){try{return JSON.parse(localStorage.getItem("pa_state")||"null")}catch(e){return null}}
 function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  $("#nav").classList.add("hide");$("#restart").classList.add("hide");
- app.innerHTML=`<h1>Ne yaptırmak istiyorsun?</h1><p class="sub">Seç, soruları cevapla, sonunda Claude'a tek mesajda yapıştıracağın eksiksiz bir prompt al.</p><div class="mode"><button data-m="hizli">⚡ Hızlı<small>Sadece temel sorular</small></button><button data-m="detay">🔍 Detaylı<small>Tasarım mühendisi brief'i</small></button></div><button class="vbig" id="vgo">🎙️ Sesli başlat<small>Sorular sesli sorulur; konuşarak ya da yazarak cevaplarsın</small></button><div id="res"></div><div class="cats"></div>`;
+ app.innerHTML=`<h1>Ne yaptırmak istiyorsun?</h1><p class="sub">Seç, soruları cevapla, sonunda Claude'a tek mesajda yapıştıracağın eksiksiz bir prompt al.</p><button class="vbig chatgo" id="chatgo">💬 Sohbetle başla<small>Soru soru ilerle, seçeneklere dokun ya da konuş</small></button><div class="mode"><button data-m="hizli">⚡ Hızlı<small>Sadece temel sorular</small></button><button data-m="detay">🔍 Detaylı<small>Tasarım mühendisi brief'i</small></button></div><button class="vbig" id="vgo">🎙️ Sesli başlat<small>Sorular sesli sorulur; konuşarak ya da yazarak cevaplarsın</small></button><div id="res"></div><div class="cats"></div>`;
  const paint=()=>app.querySelectorAll(".mode button").forEach(b=>b.classList.toggle("on",b.dataset.m===S.mode));
  app.querySelectorAll(".mode button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;paint();home()});paint();
  const sv=load();if(sv&&sv.cat&&CATS[sv.cat]){const r=app.querySelector("#res");r.innerHTML=`<div class="resume"><span>${CATS[sv.cat].i} Yarım kalan: ${CATS[sv.cat].n}</span><button>Devam et</button></div>`;
   r.querySelector("button").onclick=()=>{S=Object.assign(S,sv,{ch:Object.fromEntries(Object.entries(sv.ch).map(([k,v])=>[k,new Set(v)])),skills:new Set(sv.skills),images:[]});show()}}
- $("#vgo").onclick=vStart;
+ $("#vgo").onclick=vStart;$("#chatgo").onclick=chatStart;
  const c=app.querySelector(".cats");
  Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat";
   const pc=S.cat;S.cat=k;const n=steps().length;S.cat=pc;b.innerHTML=`<span class="ic">${v.i}</span><span class="nm">${v.n}</span><span class="ct">${n} adım</span>`;
@@ -852,7 +869,7 @@ fromHash();
 function gkey(force){let k="";try{k=localStorage.getItem("groq_key")||""}catch(e){}
  if(!k||force){k=(prompt("Groq API anahtarını yapıştır (console.groq.com → API Keys). Sadece bu telefonda saklanır.",k)||"").trim();if(k)try{localStorage.setItem("groq_key",k)}catch(e){}}return k}
 let REC=null;
-function micBtn(el,w){const b=document.createElement("button");b.type="button";b.className="aimic";b.textContent="🎙 Sesle yaz";
+function micBtn(el,w,lbl){lbl=lbl||"🎙 Sesle yaz";const b=document.createElement("button");b.type="button";b.className="aimic";b.textContent=lbl;
  const st=document.createElement("span");st.className="aist";w.appendChild(b);w.appendChild(st);
  b.onclick=async()=>{
   if(REC&&REC.btn===b){REC.r.stop();return}
@@ -865,7 +882,7 @@ function micBtn(el,w){const b=document.createElement("button");b.type="button";b
   const mt=["audio/webm","audio/mp4","audio/ogg"].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||"";
   const r=new MediaRecorder(s,mt?{mimeType:mt}:{}),parts=[];REC={r,btn:b};
   r.ondataavailable=e=>e.data.size&&parts.push(e.data);
-  r.onstop=async()=>{s.getTracks().forEach(t=>t.stop());REC=null;b.classList.remove("on");b.textContent="🎙 Sesle yaz";st.textContent="Yazıya çevriliyor…";
+  r.onstop=async()=>{s.getTracks().forEach(t=>t.stop());REC=null;b.classList.remove("on");b.textContent=lbl;st.textContent="Yazıya çevriliyor…";
    const blob=new Blob(parts,{type:r.mimeType||"audio/webm"}),ext=(r.mimeType||"").includes("mp4")?"m4a":(r.mimeType||"").includes("ogg")?"ogg":"webm";
    const fd=new FormData();fd.append("file",blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");
    fd.append("prompt",[CATS[S.cat]&&CATS[S.cat].n,"logo, afiş, marka, brütalist, minimal, palet, gradyan"].filter(Boolean).join(", "));
@@ -875,6 +892,54 @@ function micBtn(el,w){const b=document.createElement("button");b.type="button";b
     const t=((await res.json()).text||"").trim();el.value=(el.value?el.value.trim()+" ":"")+t;el.dispatchEvent(new Event("input"));st.textContent=t?"Kontrol et, istersen düzelt":"Ses anlaşılmadı";el.focus()}
    catch(e){st.textContent="Bağlantı hatası: "+e.message}};
   r.start();b.classList.add("on");b.textContent="⏹ Bitir";st.textContent="Dinliyorum… bitince Bitir'e bas"}}
+
+/* ---------- SOHBET MODU ---------- */
+const C={list:[],i:0,sel:null,ses:false};
+function chatSay(html,who){const m=document.createElement("div");m.className="msg "+(who||"bot");m.innerHTML=html;$("#clog").appendChild(m);m.scrollIntoView({behavior:"smooth",block:"end"});return m}
+function chatSpeak(t){if(!C.ses||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="tr-TR";speechSynthesis.speak(u)}
+function chatStart(){S.mode="detay";$("#nav").classList.add("hide");$("#restart").classList.remove("hide");
+ app.innerHTML=`<div class="chat"><div class="chead"><span id="cprog">Başlıyoruz</span><button class="link" id="cses">🔈 Sesli okuma: kapalı</button></div><div id="clog"></div>
+ <div class="cbar"><div id="copts"></div><div class="crow"><textarea id="cin" rows="1" placeholder="Yaz ya da 🎙'a bas…"></textarea><span id="cmic"></span><button id="csend" class="btn acc">➤</button></div>
+ <div class="crow2"><button class="link" id="cback">↶ Geri al</button><button class="link" id="cskip">Geç →</button></div></div></div>`;
+ micBtn($("#cin"),$("#cmic"),"🎙");
+ $("#cses").onclick=()=>{C.ses=!C.ses;$("#cses").textContent=C.ses?"🔊 Sesli okuma: açık":"🔈 Sesli okuma: kapalı"};
+ $("#cin").oninput=e=>{e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,140)+"px"};
+ $("#csend").onclick=()=>chatSend($("#cin").value);
+ $("#cskip").onclick=()=>chatSend("",true);
+ $("#cback").onclick=chatBack;
+ chatSay("Merhaba! Birlikte senin için güçlü bir prompt hazırlayalım. Soruları tek tek soracağım; seçeneklere dokunabilir, yazabilir ya da 🎙 ile konuşabilirsin. İstemediğin soruyu <b>Geç</b> ile atla.");
+ chatCat()}
+function chatCat(){C.list=[];C.i=-1;$("#cprog").textContent="Konu seçimi";
+ chatSay("Ne yapmak istiyorsun?");chatSpeak("Ne yapmak istiyorsun?");
+ const o=$("#copts");o.innerHTML="";Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="chip";b.textContent=v.i+" "+v.n;
+  b.onclick=()=>{chatSay(esc(v.i+" "+v.n),"me");S.cat=k;S.i=0;S.v={};S.ch={};S.anlat="";S.images=[];S.links="";S.skills=new Set(v.skills.slice(0,3));
+   if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");chatBuild();chatNext()};o.appendChild(b)})}
+function chatBuild(){C.list=[];steps().forEach(st=>{if(Array.isArray(st))qsOf(st).forEach(q=>C.list.push({q,key:S.cat+"|"+st[0]+"|"+q.id,t:st[0]}));else if(st==="SKILL")C.list.push({skill:1})});C.i=-1}
+function chatNext(){C.i++;save();const o=$("#copts");o.innerHTML="";$("#cin").value="";
+ if(C.i>=C.list.length){chatSay("Hepsi bu kadar! Promptun hazır 🎉");setTimeout(()=>{$("#nav").classList.remove("hide");result()},700);return}
+ const it=C.list[C.i];$("#cprog").textContent=CATS[S.cat].i+" "+CATS[S.cat].n+" · "+(C.i+1)+" / "+C.list.length;
+ if(it.skill){chatSay("Son olarak: Claude hangi skill'leri kullansın? Önerilenler seçili, dokunarak değiştir.");chatSpeak("Son olarak, hangi skill'ler kullanılsın?");
+  const all=[...new Set([...CATS[S.cat].skills,...S.skills,"frontend-design","canvas-design","theme-factory","dataviz","pdf","docx","pptx"])];
+  all.forEach(x=>{const b=document.createElement("button");b.className="chip"+(S.skills.has(x)?" on":"");b.innerHTML=esc(x)+(SKILLS[x]?`<small>${esc(SKILLS[x])}</small>`:"");
+   b.onclick=()=>{S.skills.has(x)?S.skills.delete(x):S.skills.add(x);b.classList.toggle("on")};o.appendChild(b)});
+  chatDone("Tamam",()=>[...S.skills].join(", ")||"skill yok");return}
+ const q=it.q;let h=`<b>${esc(q.l)}</b>`;if(q.w)h+=`<div class="why2">${esc(q.w)}</div>`;if(q.p)h+=`<div class="ex">${esc(q.p)}</div>`;
+ chatSay(h);chatSpeak(q.l);$("#cin").placeholder=q.t==="text"||q.t==="textarea"?"Yaz ya da 🎙'a bas…":"Seçeneklere dokun ya da kendin yaz…";
+ if(q.t==="select")q.o.forEach(x=>{const b=document.createElement("button");b.className="chip";b.textContent=x;b.onclick=()=>{S.v[it.key]=x;chatSay(esc(x),"me");chatNext()};o.appendChild(b)});
+ if(q.t==="scale")[1,2,3,4,5].forEach(n=>{const lab=["Çok "+q.a,"Biraz "+q.a,"Ortada","Biraz "+q.b,"Çok "+q.b][n-1];const b=document.createElement("button");b.className="chip";b.textContent=lab;b.onclick=()=>{S.v[it.key]=n;chatSay(esc(lab),"me");chatNext()};o.appendChild(b)});
+ if(q.t==="palette")PALETS.forEach(p=>{const b=document.createElement("button");b.className="chip pal";b.innerHTML=(p.c?p.c.map(c=>`<i style="background:${c}"></i>`).join(""):(p.e||""))+" "+esc(p.n);b.onclick=()=>{S.v[it.key]=p.n;chatSay(b.innerHTML,"me");chatNext()};o.appendChild(b)});
+ if(q.t==="chips"){S.ch[it.key]=S.ch[it.key]||new Set();const set=S.ch[it.key];
+  const hb=document.createElement("button");hb.className="chip";hb.textContent="Hepsi";hb.onclick=()=>{const on=set.size<q.o.length;o.querySelectorAll(".chip.opt").forEach((b,i)=>{on?set.add(q.o[i]):set.delete(q.o[i]);b.classList.toggle("on",on)})};o.appendChild(hb);
+  q.o.forEach(x=>{const b=document.createElement("button");b.className="chip opt"+(set.has(x)?" on":"");b.textContent=x;b.onclick=()=>{set.has(x)?set.delete(x):set.add(x);b.classList.toggle("on")};o.appendChild(b)});
+  chatDone("Seçtiklerim tamam ✓",()=>{const ek=$("#cin").value.trim();if(ek)S.v[it.key+"_ek"]=ek;return [...set,ek].filter(Boolean).join(", ")})}}
+function chatDone(lbl,fn){const b=document.createElement("button");b.className="chip done";b.textContent=lbl;b.onclick=()=>{const t=fn();if(!t){toast("Bir şey seç ya da Geç'e bas");return}chatSay(esc(t),"me");chatNext()};$("#copts").appendChild(b)}
+function chatSend(t,skip){if(C.i<0){toast("Önce bir konu seç");return}const it=C.list[C.i];if(!it)return;t=(t||"").trim();
+ if(skip||!t){if(!skip&&it.q&&it.q.t==="chips"&&S.ch[it.key]&&S.ch[it.key].size){$("#copts .done").click();return}chatSay("<i>geçtim</i>","me");chatNext();return}
+ if(it.skill){chatSay(esc(t),"me");S.anlat=(S.anlat?S.anlat+"\n":"")+"- Skill notu: "+t;chatNext();return}
+ const q=it.q;if(q.t==="chips"&&S.ch[it.key]&&S.ch[it.key].size){S.v[it.key+"_ek"]=t;chatSay(esc([...S.ch[it.key],t].join(", ")),"me");chatNext();return}
+ const r=apply(q,it.key,t);if(r==null&&q.t!=="text"&&q.t!=="textarea"){S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+q.l.replace(/\?$/,"")+": "+t}
+ chatSay(esc(t),"me");chatNext()}
+function chatBack(){if(C.i<=0){chatCat();return}C.i-=2;const ms=$("#clog").querySelectorAll(".msg");if(ms.length>=2){ms[ms.length-1].remove();ms[ms.length-2].remove()}chatNext()}
 </script>
 </body>
 </html>
