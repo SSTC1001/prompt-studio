@@ -857,7 +857,10 @@ function micBtn(el,w){const b=document.createElement("button");b.type="button";b
  b.onclick=async()=>{
   if(REC&&REC.btn===b){REC.r.stop();return}
   if(REC){toast("Önce diğer kaydı bitir");return}
-  const key=gkey();if(!key)return;
+  let key="";try{key=localStorage.getItem("groq_key")||""}catch(e){}
+  if(!key){if(w.querySelector(".gk"))return;const g=document.createElement("div");g.className="gk";
+   g.innerHTML='<div class="help" style="margin:8px 0 4px">İlk kullanım: Groq API anahtarını buraya yapıştır (console.groq.com → API Keys). Sadece bu telefonda saklanır.</div><input type="text" placeholder="gsk_..." autocomplete="off"><button type="button" class="aimic">Kaydet</button>';
+   w.appendChild(g);const gi=g.querySelector("input");gi.focus();g.querySelector("button").onclick=()=>{const v=gi.value.trim();if(!/^gsk_/.test(v)){toast("Anahtar gsk_ ile başlamalı");return}try{localStorage.setItem("groq_key",v)}catch(e){}g.remove();toast("Kaydedildi, şimdi Sesle yaz'a bas")};return}
   let s;try{s=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){st.textContent="Mikrofon izni yok";return}
   const mt=["audio/webm","audio/mp4","audio/ogg"].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||"";
   const r=new MediaRecorder(s,mt?{mimeType:mt}:{}),parts=[];REC={r,btn:b};
@@ -867,7 +870,7 @@ function micBtn(el,w){const b=document.createElement("button");b.type="button";b
    const fd=new FormData();fd.append("file",blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");
    fd.append("prompt",[CATS[S.cat]&&CATS[S.cat].n,"logo, afiş, marka, brütalist, minimal, palet, gradyan"].filter(Boolean).join(", "));
    try{const res=await fetch("https://api.groq.com/openai/v1/audio/transcriptions",{method:"POST",headers:{Authorization:"Bearer "+key},body:fd});
-    if(res.status===401){st.textContent="Anahtar geçersiz, tekrar dene";gkey(true);return}
+    if(res.status===401){st.textContent="Anahtar geçersiz; tekrar bas ve yenisini yapıştır";try{localStorage.removeItem("groq_key")}catch(e){}return}
     if(!res.ok){st.textContent="Hata "+res.status+": "+(await res.text()).slice(0,120);return}
     const t=((await res.json()).text||"").trim();el.value=(el.value?el.value.trim()+" ":"")+t;el.dispatchEvent(new Event("input"));st.textContent=t?"Kontrol et, istersen düzelt":"Ses anlaşılmadı";el.focus()}
    catch(e){st.textContent="Bağlantı hatası: "+e.message}};
