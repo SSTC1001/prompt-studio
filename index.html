@@ -123,6 +123,7 @@ pre{white-space:pre-wrap;background:#1b1a17;color:#f3efe6;border-radius:14px;pad
 .mtest{width:100%;margin:-6px 0 8px;padding:10px;border:1.5px dashed var(--line);border-radius:12px;background:none;color:var(--mute);font:600 14px 'DM Sans',system-ui,sans-serif;cursor:pointer}
 .mres{font-size:13.5px;margin:0 0 12px;padding:0 4px}.mres:empty{display:none}.mres.ok{color:#1f7a3f}.mres.bad{color:#b3261e}
 #vgate{position:fixed;inset:0;z-index:80;background:rgba(20,18,15,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px}#vgate button{width:min(100%,420px);padding:22px;border:0;border-radius:20px;background:var(--acc);color:#fff;font:700 20px 'DM Sans',system-ui,sans-serif;display:flex;flex-direction:column;gap:6px;cursor:pointer}#vgate small{font-weight:500;font-size:13.5px;opacity:.9}#vgate a{color:#fff;text-decoration:underline;font-size:15px;cursor:pointer}
+.aimic{margin-top:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--ink);background:#fff;font:inherit;font-size:14px}.aimic.on{background:#c8322b;color:#fff;border-color:#c8322b}.aist{margin-left:8px;font-size:13px;opacity:.75}
 </style>
 </head>
 <body>
@@ -504,7 +505,7 @@ function field(q,key){
  w.innerHTML=`<label>${esc(q.l)}${q.w?'<button class="wq" type="button">Neden?</button>':""}</label>`+(q.w?`<div class="why">${esc(q.w)}</div>`:"")+(q.p&&q.t!=="text"&&q.t!=="textarea"?`<div class="help">${esc(q.p)}</div>`:"");
  const wq=w.querySelector(".wq");if(wq)wq.onclick=()=>w.classList.toggle("open");
  if(q.t==="text"||q.t==="textarea"){const e=document.createElement(q.t==="text"?"input":"textarea");if(q.t==="text")e.type="text";
-  e.placeholder=q.p||"Yaz...";e.value=S.v[key]||"";e.oninput=()=>S.v[key]=e.value;w.appendChild(e)}
+  e.placeholder=q.p||"Yaz...";e.value=S.v[key]||"";e.oninput=()=>S.v[key]=e.value;w.appendChild(e);micBtn(e,w)}
  else if(q.t==="select"||q.t==="chips"){const single=q.t==="select",d=document.createElement("div");d.className="pills";
   if(!single)S.ch[key]=S.ch[key]||new Set();
   q.o.forEach(o=>{const b=document.createElement("button");b.className="pill"+(single?" single":"");b.textContent=o;
@@ -513,7 +514,7 @@ function field(q,key){
     else{S.ch[key].has(o)?S.ch[key].delete(o):S.ch[key].add(o);b.classList.toggle("on")}};d.appendChild(b)});
   w.appendChild(d);
   if(!single){const ex=document.createElement("input");ex.type="text";ex.className="extra";ex.placeholder="+ Listede yoksa kendin yaz";
-   ex.value=S.v[key+"_ek"]||"";ex.oninput=()=>S.v[key+"_ek"]=ex.value;w.appendChild(ex)}}
+   ex.value=S.v[key+"_ek"]||"";ex.oninput=()=>S.v[key+"_ek"]=ex.value;w.appendChild(ex);micBtn(ex,w)}}
  else if(q.t==="scale"){const d=document.createElement("div");d.className="scale";
   d.innerHTML=`<span class="ends">${esc(q.a)}</span><div class="dots"></div><span class="ends r">${esc(q.b)}</span>`;
   const dots=d.querySelector(".dots");[1,2,3,4,5].forEach(n=>{const b=document.createElement("button");b.className="dot"+(S.v[key]==n?" on":"");
@@ -836,6 +837,31 @@ function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).repl
 window.addEventListener("hashchange",fromHash);
 fromHash();
 
+
+/* AI dikte (Groq Whisper): yalnızca sesi yazıya çevirir, yorum yapmaz */
+function gkey(force){let k="";try{k=localStorage.getItem("groq_key")||""}catch(e){}
+ if(!k||force){k=(prompt("Groq API anahtarını yapıştır (console.groq.com → API Keys). Sadece bu telefonda saklanır.",k)||"").trim();if(k)try{localStorage.setItem("groq_key",k)}catch(e){}}return k}
+let REC=null;
+function micBtn(el,w){const b=document.createElement("button");b.type="button";b.className="aimic";b.textContent="🎙 Sesle yaz";
+ const st=document.createElement("span");st.className="aist";w.appendChild(b);w.appendChild(st);
+ b.onclick=async()=>{
+  if(REC&&REC.btn===b){REC.r.stop();return}
+  if(REC){toast("Önce diğer kaydı bitir");return}
+  const key=gkey();if(!key)return;
+  let s;try{s=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){st.textContent="Mikrofon izni yok";return}
+  const mt=["audio/webm","audio/mp4","audio/ogg"].find(t=>window.MediaRecorder&&MediaRecorder.isTypeSupported(t))||"";
+  const r=new MediaRecorder(s,mt?{mimeType:mt}:{}),parts=[];REC={r,btn:b};
+  r.ondataavailable=e=>e.data.size&&parts.push(e.data);
+  r.onstop=async()=>{s.getTracks().forEach(t=>t.stop());REC=null;b.classList.remove("on");b.textContent="🎙 Sesle yaz";st.textContent="Yazıya çevriliyor…";
+   const blob=new Blob(parts,{type:r.mimeType||"audio/webm"}),ext=(r.mimeType||"").includes("mp4")?"m4a":(r.mimeType||"").includes("ogg")?"ogg":"webm";
+   const fd=new FormData();fd.append("file",blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");
+   fd.append("prompt",[CATS[S.cat]&&CATS[S.cat].n,"logo, afiş, marka, brütalist, minimal, palet, gradyan"].filter(Boolean).join(", "));
+   try{const res=await fetch("https://api.groq.com/openai/v1/audio/transcriptions",{method:"POST",headers:{Authorization:"Bearer "+key},body:fd});
+    if(res.status===401){st.textContent="Anahtar geçersiz, tekrar dene";gkey(true);return}
+    if(!res.ok){st.textContent="Hata "+res.status+": "+(await res.text()).slice(0,120);return}
+    const t=((await res.json()).text||"").trim();el.value=(el.value?el.value.trim()+" ":"")+t;el.dispatchEvent(new Event("input"));st.textContent=t?"Kontrol et, istersen düzelt":"Ses anlaşılmadı";el.focus()}
+   catch(e){st.textContent="Bağlantı hatası: "+e.message}};
+  r.start();b.classList.add("on");b.textContent="⏹ Bitir";st.textContent="Dinliyorum… bitince Bitir'e bas"}}
 </script>
 </body>
 </html>
