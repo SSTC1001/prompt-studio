@@ -677,10 +677,11 @@ function build(){
   "- Tipografi: Inter, Roboto, Arial, Space Grotesk gibi her yerde görülen fontlar yerine karakterli bir font seç. Fontlar Türkçe karakterleri (ğ ş ı İ ç ö ü) tam desteklemeli; Google Fonts kullanıyorsan latin-ext alt kümesini yükle.",
   "- Renk: brief'te palet varsa hex kodlarına birebir uy. Yoksa paleti konunun kendi dünyasından türet, 2-4 renkle sınırla ve hex kodlarını baştan yaz. Metin/zemin kontrastı küçük yazıda en az 4.5:1, büyük başlıkta en az 3:1 olsun.",
   "- Aşağıdakiler Claude çıktısını ilk bakışta ele veren kalıplar; hiçbirini kullanma: "+(TELL[k]||TELL.diger).join("; ")+".",
+  "- Brief'teki palet bu kalıplardan birine benziyorsa (ör. lacivert + amber), paleti kullanıcı seçtiği için koru; ama o kalıbın diğer işaretlerinden (yerleşim, tipografi, süsler) özellikle uzak dur ve renkleri beklenmedik oranlarda kullan.",
   "- Başlamadan önce bu iş için akla gelen en bariz 5 çözümü kendine listele ve hiçbirini kullanma. Cesareti tek bir imza öğede harca, geri kalanını sade tut.");
  kural.push(...(KURAL[k]||KURAL.diger).map(x=>"- "+x));
  kural.push("- Gerçek isim, marka adı, tarih ve iletişim bilgisi uydurma; brief’te varsa birebir kullan. Yoksa o öğeyi tasarımdan çıkar, [ADINIZ] gibi köşeli parantezli yer tutucu bırakma.","- Diğer eksik bilgilerde durup sorma; makul bir varsayım yap ve teslimin sonunda varsayımları listele.");
- if(S.siri)kural.push("- Cevaplar Siri ile sesle dikte edildi: özel isimlerde duyma hatası olabilir. Marka ve ürün adlarına dokunma; yalnızca anlamsız ya da bariz yanlış duyulmuş genel kelimeleri düzelt ve sonda hangi kelimeyi neye düzelttiğini yaz.");
+ if(S.siri)kural.push("- Cevaplar sesle dikte edildi: özel isimlerde duyma hatası olabilir. Marka ve ürün adlarına dokunma; yalnızca anlamsız ya da bariz yanlış duyulmuş genel kelimeleri düzelt ve sonda hangi kelimeyi neye düzelttiğini yaz.");
  const kabul=[...(KABUL[k]||KABUL.diger),"Brief'teki her MUTLAKA maddesi karşılanmış, hiçbir OLMASIN maddesi yok.","Sonuç, aynı konuda Claude ile yapılmış sıradan bir işten ilk bakışta ayırt edilebiliyor."];
  const L=[];
  L.push("<brief>",...(S.anlat?["### Benim anlatımım (sesle söyledim)",S.anlat,""]:[]),...brief,"</brief>","");
@@ -789,7 +790,7 @@ function apply(q,key,a){
   if(v){S.v[key]=v;return "beşte "+v}return null}
  if(q.t==="palette"){const h=matchOpts(a,PALETS.map(p=>p.n));if(h[0]){S.v[key]=h[0];return h[0]}return null}
  const na=norm(a);
- if(q.t==="chips"&&/^(hepsi|hepsini|tümü|tamamı|hepsi olsun|hepsi olmasın|hepsini istemiyorum)\b/.test(na)){S.ch[key]=new Set(q.o);const ek=a.replace(/^\S+\s*(olsun|olmasın)?[,.]?\s*/i,"").trim();if(ek)S.v[key+"_ek"]=ek;return "hepsi"}
+ if(q.t==="chips"&&/(^|\s)(hepsi|hepsini|tümü|tamamı|hepsinin)(\s|$|[.,!])/.test(na)){S.ch[key]=new Set(q.o);const ek=a.replace(/^\S+\s*(olsun|olmasın)?[,.]?\s*/i,"").trim();if(ek)S.v[key+"_ek"]=ek;return "hepsi"}
  if(/^(hiçbiri|hiç biri|yok)\.?$/.test(na))return null;
  const h=matchOpts(a,q.o);
  if(q.t==="select"){if(h[0]){S.v[key]=h[0];return h[0]}return null}
@@ -843,7 +844,7 @@ function siriList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=st
  SIRI_CORE.forEach(id=>{if(all[id])add(all[id].q,all[id].t)});
  S.cat=pc;S.mode=pm;return L}
 const SIRI_TXT={aksiyon:"Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",qr:"Afişte QR kod olsun mu? Olacaksa neye gitsin? Yoksa geç de.",gercek:"İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
- estetik:"Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",palet:"Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+ estetik:"Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",palet:"Renkler nasıl olsun? Örneğin İznik Çini, Ebru, Kan Kırmızısı, Okyanus; ya da kendi renklerini söyle. Boş geçersen sana özel cesur bir palet seçilir.",
  smp:"Kitle tek bir şey hatırlasa, o ne olmalı?",hayal:"Kafandaki tasarımı serbestçe anlat.",his:"İlk 5 saniyede ne hissetmeliler?"};
 function siriText(q,i,n){let t=SIRI_TXT[q.id];
  if(!t){t=q.l.replace(/\s*\([^)]*\)/g,"").replace(/↔/g,"mı").trim();if(!/[?.]$/.test(t))t+=" ne olsun?";
@@ -985,7 +986,7 @@ function hfRec(){return new Promise(res=>{
 async function hfSTT(o){hfStat("✍️ Yazıya çeviriyorum","cevir");const key=localStorage.getItem("groq_key");
  const ext=o.type.includes("mp4")?"m4a":o.type.includes("ogg")?"ogg":"webm",fd=new FormData();
  fd.append("file",o.blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");
- fd.append("prompt",(CATS[S.cat]?CATS[S.cat].n+". ":"")+"geç, geri, yok, tamam, bitir");
+ const cq=H.list[H.i]&&H.list[H.i].q;fd.append("prompt",(CATS[S.cat]?CATS[S.cat].n+". ":"")+(cq&&cq.o?cq.o.join(", ")+". ":cq&&cq.t==="palette"?PALETS.map(p=>p.n).join(", ")+". ":"")+"hepsi, geç, geri, yok, tamam, bitir");
  const res=await fetch("https://api.groq.com/openai/v1/audio/transcriptions",{method:"POST",headers:{Authorization:"Bearer "+key},body:fd});
  if(res.status===401){localStorage.removeItem("groq_key");throw new Error("Anahtar geçersiz")}
  if(!res.ok)throw new Error("Groq hatası "+res.status);return ((await res.json()).text||"").trim()}
@@ -1026,7 +1027,7 @@ async function hfLoop(){if(H.busy)return;H.busy=true;
  finally{H.busy=false}}
 function hfApply(it){if(!H.buf)return;const q=it.q,t=H.buf;H.buf="";
  if(q.t==="text"||q.t==="textarea"){S.v[it.key]=t;return}
- const r=apply(q,it.key,t);if(r==null||/listede yoktu/.test(r||""))S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+q.l.replace(/\?$/,"")+": "+t}
+ const r=apply(q,it.key,t);if(r==null)S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+q.l.replace(/\?$/,"")+": "+t}
 function hfFinish(){H.on=false;H.paused=false;try{speechSynthesis.cancel()}catch(e){}if(H.stream)H.stream.getTracks().forEach(t=>t.stop());try{H.ac&&H.ac.close()}catch(e){}
  if(!S.cat){home();return}S.siri=true;$("#nav").classList.remove("hide");result()}
 </script>
