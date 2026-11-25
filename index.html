@@ -313,7 +313,7 @@ const CATS = {
    {id:"baski",l:"Basılacak mı?",t:"select",o:["Evet, baskı kalitesi","Sadece dijital"]}]],
   "KESIF","BASARI","GEREKSINIM","KISIT","DIL","STIL","TIPO","GORSEL","SERBEST","IMG","SKILL","TESLIM"]},
 
- logo:{i:"✒️",n:"Logo / Marka",skills:["brand-guidelines","Design System (artifact)","canvas-design","theme-factory"],steps:[
+ logo:{i:"✒️",n:"Logo / Marka",skills:["Design (artifact)","canvas-design","frontend-design","Design System (artifact)"],steps:[
   ["Marka özü",[
    {id:"isim",l:"Marka adı ve sektör",t:"text"},
    {id:"hikaye",l:"Markanın hikâyesi",t:"textarea"},
@@ -755,6 +755,9 @@ function apply(q,key,a){
    if(n.includes(A.slice(0,4)))v=cok?1:2;else if(n.includes(Bq.slice(0,4)))v=cok?5:4;else if(/orta|arası|ikisi de/.test(n))v=3}
   if(v){S.v[key]=v;return "beşte "+v}return null}
  if(q.t==="palette"){const h=matchOpts(a,PALETS.map(p=>p.n));if(h[0]){S.v[key]=h[0];return h[0]}return null}
+ const na=norm(a);
+ if(q.t==="chips"&&/^(hepsi|hepsini|tümü|tamamı|hepsi olsun|hepsi olmasın|hepsini istemiyorum)\b/.test(na)){S.ch[key]=new Set(q.o);const ek=a.replace(/^\S+\s*(olsun|olmasın)?[,.]?\s*/i,"").trim();if(ek)S.v[key+"_ek"]=ek;return "hepsi"}
+ if(/^(hiçbiri|hiç biri|yok)\.?$/.test(na))return null;
  const h=matchOpts(a,q.o);
  if(q.t==="select"){if(h[0]){S.v[key]=h[0];return h[0]}return null}
  S.ch[key]=S.ch[key]||new Set();h.forEach(x=>S.ch[key].add(x));if(!h.length){S.v[key+"_ek"]=a.trim();return "listede yoktu, kendi cevabın olarak yazdım"}return h.join(", ")}
@@ -806,15 +809,16 @@ function siriList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=st
  if(all.qr)add(all.qr.q,all.qr.t);
  SIRI_CORE.forEach(id=>{if(all[id])add(all[id].q,all[id].t)});
  S.cat=pc;S.mode=pm;return L}
-const SIRI_TXT={aksiyon:"Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",qr:"Afişte QR kod olsun mu? Olacaksa neye gitsin? Yoksa geç de.",gercek:"İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
- estetik:"Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",palet:"Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
+const SIRI_TXT={aksiyon:"Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",qr:"Afişte QR kod olsun mu? Olacaksa neye gitsin? Yoksa geç de.",gercek:"İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",tekFikir:"Bunu benzerlerinden ayıracak tek cesur fikir ne?",must:"Mutlaka olması gereken ne var?",wont:"Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
+ estetik:"Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",palet:"Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
  smp:"Kitle tek bir şey hatırlasa, o ne olmalı?",hayal:"Kafandaki tasarımı serbestçe anlat.",his:"İlk 5 saniyede ne hissetmeliler?"};
 function siriText(q,i,n){let t=SIRI_TXT[q.id];
  if(!t){t=q.l.replace(/\s*\([^)]*\)/g,"").replace(/↔/g,"mı").trim();if(!/[?.]$/.test(t))t+=" ne olsun?";
-  if(q.t==="select"||q.t==="chips"){const o=q.o;t+=" Örneğin: "+o.slice(0,5).join(", ")+"."}}
+  if(q.t==="select"){t+=" Seçenekler: "+q.o.join(", ")+"."}
+  if(q.t==="chips"){t+=" Seçenekler: "+q.o.slice(0,12).join(", ")+". Birden fazla söyleyebilirsin, hepsi de diyebilirsin."}}
  return (i===0?"Toplam "+n+" soru var. Atlamak istediğinde geç de. ":"")+"Soru "+(i+1)+". "+t}
 function fromHash(){const h=decodeURIComponent((location.hash||"").slice(1).replace(/\+/g," "));if(!h||!h.includes("="))return false;
- const P={};h.split("&").forEach(x=>{const i=x.indexOf("=");if(i>0)P[norm(x.slice(0,i))]=x.slice(i+1).trim()});
+ const P={};h.split("&").forEach(x=>{const i=x.indexOf("=");if(i>0){const kk=norm(x.slice(0,i));P[kk]=kk==="cevaplar"?x.slice(i+1):x.slice(i+1).trim()}});
  let k=P.kat;if(k){const n=norm(k);k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)))}if(!k)return false;
  if(P.yon3)S.yon3=true;if(P.mod)S.mode=/hızlı|hizli/.test(norm(P.mod))?"hizli":"detay";
  S.cat=k;S.i=0;S.v={};S.ch={};S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");

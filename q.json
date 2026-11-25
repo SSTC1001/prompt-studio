@@ -1,24 +1,24 @@
 {
  "sunum": [
   "Toplam 10 soru var. Atlamak istediğinde geç de. Soru 1. Sunumun konusu ne olsun?",
-  "Soru 2. Nerede sunulacak? Örneğin: Ders / akademik, Jüri, İş toplantısı, Yatırımcı (pitch), Konferans.",
-  "Soru 3. Dinleyicinin konu bilgisi ne olsun? Örneğin: Hiç bilmiyor, Temel, Uzman (hoca, mühendis), Karışık.",
+  "Soru 2. Nerede sunulacak? Seçenekler: Ders / akademik, Jüri, İş toplantısı, Yatırımcı (pitch), Konferans, Online, Basılı dağıtım. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
+  "Soru 3. Dinleyicinin konu bilgisi ne olsun? Seçenekler: Hiç bilmiyor, Temel, Uzman (hoca, mühendis), Karışık.",
   "Soru 4. Süre ne olsun?",
   "Soru 5. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 6. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 7. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 7. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
   "Soru 8. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 9. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 9. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 10. Kafandaki tasarımı serbestçe anlat."
  ],
  "site": [
-  "Toplam 8 soru var. Atlamak istediğinde geç de. Soru 1. Site türü ne olsun? Örneğin: Landing page, Portfolyo, Kurumsal, Blog, E-ticaret.",
+  "Toplam 8 soru var. Atlamak istediğinde geç de. Soru 1. Site türü ne olsun? Seçenekler: Landing page, Portfolyo, Kurumsal, Blog, E-ticaret, Etkinlik, Kişisel, Restoran / kafe, Topluluk, Ürün tanıtımı. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 2. Marka adı + tek cümlelik tanım ne olsun?",
   "Soru 3. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 4. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 5. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 5. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
   "Soru 6. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 7. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 7. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 8. Kafandaki tasarımı serbestçe anlat."
  ],
  "uygulama": [
@@ -27,78 +27,78 @@
   "Soru 3. İlham aldığın uygulamalar ne olsun?",
   "Soru 4. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 5. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 6. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 6. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
   "Soru 7. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 8. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 8. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 9. Kafandaki tasarımı serbestçe anlat."
  ],
  "afiş": [
-  "Toplam 11 soru var. Atlamak istediğinde geç de. Soru 1. Ne için? Örneğin: Etkinlik, Konser, Kampanya, Duyuru, Film afişi tarzı.",
+  "Toplam 11 soru var. Atlamak istediğinde geç de. Soru 1. Ne için? Seçenekler: Etkinlik, Konser, Kampanya, Duyuru, Film afişi tarzı, Sergi, Kulüp, Sosyal medya postu. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 2. Ana başlık ne olsun?",
   "Soru 3. Olması gereken bilgiler ne olsun?",
-  "Soru 4. Nereden görülecek? Örneğin: Uzaktan (10 m+), Orta (3-6 m), Yakından / elde, Telefon ekranında.",
+  "Soru 4. Nereden görülecek? Seçenekler: Uzaktan (10 m+), Orta (3-6 m), Yakından / elde, Telefon ekranında.",
   "Soru 5. Afişte QR kod olsun mu? Olacaksa neye gitsin? Yoksa geç de.",
   "Soru 6. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 7. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 8. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 8. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
   "Soru 9. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 10. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 10. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 11. Kafandaki tasarımı serbestçe anlat."
  ],
  "logo": [
   "Toplam 10 soru var. Atlamak istediğinde geç de. Soru 1. Marka adı ve sektör ne olsun?",
   "Soru 2. Markanın hikâyesi ne olsun?",
-  "Soru 3. Sıfırdan mı, yenileme mi? Örneğin: Sıfırdan yeni marka, Mevcut logoyu yenileme, Mevcut logoyu hafif düzeltme.",
-  "Soru 4. Marka arketipi ne olsun? Örneğin: Masum, Bilge, Kâşif, Asi, Sihirbaz.",
+  "Soru 3. Sıfırdan mı, yenileme mi? Seçenekler: Sıfırdan yeni marka, Mevcut logoyu yenileme, Mevcut logoyu hafif düzeltme.",
+  "Soru 4. Marka arketipi ne olsun? Seçenekler: Masum, Bilge, Kâşif, Asi, Sihirbaz, Kahraman, Âşık, Soytarı, Sıradan insan, Koruyucu, Hükümdar, Yaratıcı. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 5. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 6. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 7. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 7. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
   "Soru 8. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 9. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 9. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 10. Kafandaki tasarımı serbestçe anlat."
  ],
  "shorts": [
-  "Toplam 8 soru var. Atlamak istediğinde geç de. Soru 1. Kanal nişi ne olsun? Örneğin: İlginç bilgiler, Korku hikâyeleri, Oyun, Gizli tarih, Perde arkası.",
+  "Toplam 8 soru var. Atlamak istediğinde geç de. Soru 1. Kanal nişi ne olsun? Seçenekler: İlginç bilgiler, Korku hikâyeleri, Oyun, Gizli tarih, Perde arkası, Bilim, Motivasyon, Mizah, Eğitim. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 2. Kanal adı ne olsun?",
   "Soru 3. Videonun konusu ne olsun?",
-  "Soru 4. Konu araştırılsın mı? Örneğin: Evet, doğru bilgi + kaynak, Trend konu öner, Konuyu ben verdim.",
+  "Soru 4. Konu araştırılsın mı? Seçenekler: Evet, doğru bilgi + kaynak, Trend konu öner, Konuyu ben verdim.",
   "Soru 5. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 6. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 7. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 7. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 8. Kafandaki tasarımı serbestçe anlat."
  ],
  "belge": [
-  "Toplam 8 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Örneğin: Rapor, Proje raporu, Ödev, CV, Ön yazı.",
+  "Toplam 8 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Seçenekler: Rapor, Proje raporu, Ödev, CV, Ön yazı, Teklif, Makale, Kılavuz, Dilekçe, Tez bölümü. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 2. Kime gidecek?",
-  "Soru 3. Okurun teknik seviyesi ne olsun? Örneğin: Uzman (terimleri bilir), Teknik ama alan dışı, Teknik olmayan.",
+  "Soru 3. Okurun teknik seviyesi ne olsun? Seçenekler: Uzman (terimleri bilir), Teknik ama alan dışı, Teknik olmayan.",
   "Soru 4. Konu ve ana mesaj ne olsun?",
   "Soru 5. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 6. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 7. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 7. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 8. Kafandaki tasarımı serbestçe anlat."
  ],
  "oyun": [
   "Toplam 10 soru var. Atlamak istediğinde geç de. Soru 1. Oyunu tek cümleyle anlat ne olsun?",
-  "Soru 2. Tür ne olsun? Örneğin: Bulmaca, Platform, Quiz, Kelime, Arcade.",
+  "Soru 2. Tür ne olsun? Seçenekler: Bulmaca, Platform, Quiz, Kelime, Arcade, Strateji, Hikâye / seçim, Simülasyon, Eğitici. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 3. Tema / dünya ne olsun?",
   "Soru 4. İlk 5 saniyede ne hissetmeliler?",
   "Soru 5. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 6. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 7. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
+  "Soru 7. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
   "Soru 8. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 9. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 9. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 10. Kafandaki tasarımı serbestçe anlat."
  ],
  "dashboard": [
   "Toplam 6 soru var. Atlamak istediğinde geç de. Soru 1. Hangi veri?",
-  "Soru 2. Güncellenme ne olsun? Örneğin: Tek seferlik, Elle güncelleyeceğim, Otomatik.",
+  "Soru 2. Güncellenme ne olsun? Seçenekler: Tek seferlik, Elle güncelleyeceğim, Otomatik.",
   "Soru 3. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 4. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
   "Soru 5. Renkler nasıl olsun? Örneğin Gece Mavisi, Terracotta, Neon Gece, Lüks Altın, İznik Çini; ya da kendi renklerini söyle.",
-  "Soru 6. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf."
+  "Soru 6. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi."
  ],
  "eposta": [
-  "Toplam 4 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Örneğin: Resmi e-posta, Hoca yazışması, İş başvurusu, Takip, Rica.",
+  "Toplam 4 soru var. Atlamak istediğinde geç de. Soru 1. Tür ne olsun? Seçenekler: Resmi e-posta, Hoca yazışması, İş başvurusu, Takip, Rica, Şikâyet, Teşekkür, Özür. Birden fazla söyleyebilirsin, hepsi de diyebilirsin.",
   "Soru 2. Alıcı kim, ilişkin ne?",
   "Soru 3. E-postadan beklediğin TEK sonuç ne olsun?",
   "Soru 4. Cevap için tarih / aciliyet ne olsun?"
@@ -108,8 +108,8 @@
   "Soru 2. Sonunda elinde ne olsun?",
   "Soru 3. İşte hangi gerçek isimler, marka adı, tarih ve iletişim bilgileri yazsın? Yoksa geç de.",
   "Soru 4. Gören kişi sonunda ne yapmalı? Örneğin QR okutsun, kayıt olsun, takip etsin.",
-  "Soru 5. Hangi tarz olsun? Örneğin brütalist, retro, minimal, editoryal, sinematik karanlık ya da İznik çini.",
-  "Soru 6. Olmasını istemediğin ne var? Örneğin mor gradyan, emoji ikonlar, stok fotoğraf.",
+  "Soru 5. Hangi tarz olsun? Seçenekler: brütalist, Swiss, Art Deco, Memphis, retro 70'ler, 80'ler synthwave, Y2K, editoryal, Japon minimalizmi, lüks, sinematik karanlık, el çizimi, kolaj, punk, cyberpunk, pixel art, Osmanlı çini, konstrüktivist. Birkaçını karıştırabilirsin.",
+  "Soru 6. Olmasını istemediğin ne var? Seçenekler: mor-mavi gradyan, 3'lü kart ızgarası, emoji ikonlar, ortalanmış klişe giriş, Inter ya da Arial fontu, stok fotoğraf, cam efekti, aşırı yuvarlak köşeler, clipart, düz tek renk arka plan. Birkaçını, hepsini ya da kendi cümleni söyle; nedenini de eklersen daha iyi.",
   "Soru 7. Kafandaki tasarımı serbestçe anlat."
  ]
 }
