@@ -141,6 +141,11 @@ pre{white-space:pre-wrap;background:#1b1a17;color:#f3efe6;border-radius:14px;pad
 .crow #cmic .aimic{margin:0;height:44px;padding:0 13px}.crow #cmic .aist{display:none}.crow .btn{height:44px;padding:0;flex:0 0 52px;width:52px;min-width:0}.crow #cmic{flex:0 0 auto}
 .crow2{display:flex;justify-content:space-between;margin-top:4px}
 #cmic .gk{position:absolute;left:12px;right:12px;bottom:100%;background:var(--card);padding:10px;border:1px solid var(--line);border-radius:12px}
+.hf{text-align:center;padding-top:10px}.hfprog{color:var(--mute);font-size:13px}.hfq{font-family:'Lora',Georgia,serif;font-size:clamp(24px,6.5vw,34px);line-height:1.2;margin:18px 0 12px}
+.hfst{display:inline-block;padding:7px 14px;border-radius:999px;background:var(--line);font-weight:600;font-size:14px}.hfst.dinle{background:#1b1a17;color:#fff}.hfst.dinle.on{background:var(--acc)}.hfst.cevir{background:#e9e2c7}.hfst.err{background:#f6d3cc}
+.hflvl{height:6px;background:var(--line);border-radius:3px;margin:14px auto;max-width:260px;overflow:hidden}.hflvl i{display:block;height:100%;width:0;background:var(--acc);transition:width .08s}
+.hfans{min-height:40px;font-size:17px;margin:10px 0;padding:10px;border-radius:12px;background:var(--card);border:1px solid var(--line)}.hfans:empty{display:none}
+.hfex{font-size:13px;color:var(--mute);margin:8px 0 18px}.hfbtns{display:flex;gap:8px}.hfbtns .btn{flex:1}
 </style>
 </head>
 <body>
@@ -506,12 +511,12 @@ function save(){try{localStorage.setItem("pa_state",JSON.stringify({mode:S.mode,
 function load(){try{return JSON.parse(localStorage.getItem("pa_state")||"null")}catch(e){return null}}
 function home(){S.cat=null;vStop();const vm=$("#vmini");if(vm)vm.remove();
  $("#nav").classList.add("hide");$("#restart").classList.add("hide");
- app.innerHTML=`<h1>Ne yaptırmak istiyorsun?</h1><p class="sub">Seç, soruları cevapla, sonunda Claude'a tek mesajda yapıştıracağın eksiksiz bir prompt al.</p><button class="vbig chatgo" id="chatgo">💬 Sohbetle başla<small>Soru soru ilerle, seçeneklere dokun ya da konuş</small></button><div class="mode"><button data-m="hizli">⚡ Hızlı<small>Sadece temel sorular</small></button><button data-m="detay">🔍 Detaylı<small>Tasarım mühendisi brief'i</small></button></div><button class="vbig" id="vgo">🎙️ Sesli başlat<small>Sorular sesli sorulur; konuşarak ya da yazarak cevaplarsın</small></button><div id="res"></div><div class="cats"></div>`;
+ app.innerHTML=`<h1>Ne yaptırmak istiyorsun?</h1><p class="sub">Seç, soruları cevapla, sonunda Claude'a tek mesajda yapıştıracağın eksiksiz bir prompt al.</p><button class="vbig chatgo" id="chatgo">🎧 Sesli soru-cevap<small>Sorular sesli okunur, sen konuşursun, kendiliğinden ilerler. Butona basmak yok.</small></button><div class="mode"><button data-m="hizli">⚡ Hızlı<small>Sadece temel sorular</small></button><button data-m="detay">🔍 Detaylı<small>Tasarım mühendisi brief'i</small></button></div><button class="vbig" id="vgo">🎙️ Sesli başlat<small>Sorular sesli sorulur; konuşarak ya da yazarak cevaplarsın</small></button><div id="res"></div><div class="cats"></div>`;
  const paint=()=>app.querySelectorAll(".mode button").forEach(b=>b.classList.toggle("on",b.dataset.m===S.mode));
  app.querySelectorAll(".mode button").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;paint();home()});paint();
  const sv=load();if(sv&&sv.cat&&CATS[sv.cat]){const r=app.querySelector("#res");r.innerHTML=`<div class="resume"><span>${CATS[sv.cat].i} Yarım kalan: ${CATS[sv.cat].n}</span><button>Devam et</button></div>`;
   r.querySelector("button").onclick=()=>{S=Object.assign(S,sv,{ch:Object.fromEntries(Object.entries(sv.ch).map(([k,v])=>[k,new Set(v)])),skills:new Set(sv.skills),images:[]});show()}}
- $("#vgo").onclick=vStart;$("#chatgo").onclick=chatStart;
+ $("#vgo").onclick=vStart;$("#chatgo").onclick=hfStart;
  const c=app.querySelector(".cats");
  Object.entries(CATS).forEach(([k,v])=>{const b=document.createElement("button");b.className="cat";
   const pc=S.cat;S.cat=k;const n=steps().length;S.cat=pc;b.innerHTML=`<span class="ic">${v.i}</span><span class="nm">${v.n}</span><span class="ct">${n} adım</span>`;
@@ -940,6 +945,90 @@ function chatSend(t,skip){if(C.i<0){toast("Önce bir konu seç");return}const it
  const r=apply(q,it.key,t);if(r==null&&q.t!=="text"&&q.t!=="textarea"){S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+q.l.replace(/\?$/,"")+": "+t}
  chatSay(esc(t),"me");chatNext()}
 function chatBack(){if(C.i<=0){chatCat();return}C.i-=2;const ms=$("#clog").querySelectorAll(".msg");if(ms.length>=2){ms[ms.length-1].remove();ms[ms.length-2].remove()}chatNext()}
+
+/* ---------- ELLER SERBEST SESLİ SORU-CEVAP (Whisper + sessizlik algılama) ---------- */
+const H={on:false,paused:false,stream:null,ac:null,an:null,list:[],i:0,buf:""};
+function hfList(k){const pc=S.cat,pm=S.mode;S.cat=k;S.mode="detay";const st=steps(),L=[],seen=new Set();
+ const add=(q,t)=>{if(seen.has(q.id)||q.t==="scale"||SIRI_SKIP.includes(q.id))return;seen.add(q.id);L.push({q,key:k+"|"+(q._t||t)+"|"+q.id})};
+ const first=st.find(x=>Array.isArray(x));if(first)qsOf(first).forEach(q=>add(q,first[0]));
+ st.forEach(x=>{if(Array.isArray(x))qsOf(x).forEach(q=>{if(q.k)add(q,x[0])})});
+ S.cat=pc;S.mode=pm;return L}
+function hfText(q){let t=SIRI_TXT[q.id];
+ if(!t){t=q.l.replace(/\s*\([^)]*\)/g,"").replace(/↔/g,"mı").trim();if(!/[?.]$/.test(t))t+=" ne olsun?"}
+ else t=t.replace(/(Seçenekler|Örneğin):.*$/,"").trim();
+ if((q.t==="select"||q.t==="chips")&&q.o)t+=" Örneğin: "+q.o.slice(0,4).join(", ")+".";
+ if(q.t==="palette"&&!SIRI_TXT[q.id])t+=" Örneğin: "+PALETS.filter(p=>p.c).slice(0,4).map(p=>p.n).join(", ")+"; ya da kendi renklerini söyle.";
+ return t}
+function hfUI(){app.innerHTML=`<div class="hf"><div class="hfprog" id="hprog"></div><div class="hfq" id="hq">Hazırlanıyor…</div>
+ <div class="hfst" id="hst"></div><div class="hflvl"><i id="hlvl"></i></div><div class="hfans" id="hans"></div><div class="hfex" id="hex"></div>
+ <div class="hfbtns"><button class="btn sec" id="hpause">⏸ Duraklat</button><button class="btn sec" id="hskip">Geç →</button><button class="btn acc" id="hend">Bitir</button></div>
+ <div class="help" style="margin-top:14px">Sesli komutlar: <b>geç</b> (soruyu atla), <b>geri</b> (önceki soru), <b>bitir</b>. Cevaptan sonra “başka var mı?” sorusuna <b>yok</b> de.</div></div>`;
+ $("#hpause").onclick=()=>{H.paused=!H.paused;$("#hpause").textContent=H.paused?"▶ Devam":"⏸ Duraklat";if(!H.paused)hfLoop()};
+ $("#hskip").onclick=()=>{H.skip=true};$("#hend").onclick=()=>hfFinish()}
+function hfStat(t,cls){const e=$("#hst");if(e){e.textContent=t;e.className="hfst "+(cls||"")}}
+function hfSay(t){return new Promise(r=>{hfStat("🔊 Okuyorum","konus");if(!window.speechSynthesis)return r();speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(t);u.lang="tr-TR";u.rate=1.02;const vs=speechSynthesis.getVoices().filter(v=>/^tr/i.test(v.lang));if(vs[0])u.voice=vs[0];
+ let done=false;const fin=()=>{if(!done){done=true;setTimeout(r,250)}};u.onend=fin;u.onerror=fin;setTimeout(fin,1500+t.length*85);speechSynthesis.speak(u)})}
+function hfRec(){return new Promise(res=>{
+ const mt=["audio/webm","audio/mp4","audio/ogg"].find(t=>MediaRecorder.isTypeSupported(t))||"";
+ const r=new MediaRecorder(H.stream,mt?{mimeType:mt}:{}),parts=[],buf=new Float32Array(H.an.fftSize);
+ let t0=performance.now(),spoke=false,lastV=t0,floor=0,n=0,stopped=false;
+ r.ondataavailable=e=>e.data.size&&parts.push(e.data);
+ r.onstop=()=>res({blob:new Blob(parts,{type:r.mimeType||"audio/webm"}),spoke,type:r.mimeType||""});
+ r.start(250);hfStat("🎙 Dinliyorum…","dinle");
+ const tick=()=>{if(stopped)return;H.an.getFloatTimeDomainData(buf);let s=0;for(const x of buf)s+=x*x;const rms=Math.sqrt(s/buf.length),now=performance.now();
+  if(now-t0<400){floor+=rms;n++}const thr=Math.max(.018,(n?floor/n:0)*2.8);
+  const l=$("#hlvl");if(l)l.style.width=Math.min(100,rms*900)+"%";
+  if(rms>thr){if(!spoke)hfStat("🎙 Dinliyorum… (bitince sus)","dinle on");spoke=true;lastV=now}
+  const stop=H.skip||H.paused||!H.on||(spoke&&now-lastV>2200)||(!spoke&&now-t0>12000)||now-t0>90000;
+  if(stop){stopped=true;r.stop();return}requestAnimationFrame(tick)};tick()})}
+async function hfSTT(o){hfStat("✍️ Yazıya çeviriyorum","cevir");const key=localStorage.getItem("groq_key");
+ const ext=o.type.includes("mp4")?"m4a":o.type.includes("ogg")?"ogg":"webm",fd=new FormData();
+ fd.append("file",o.blob,"ses."+ext);fd.append("model","whisper-large-v3");fd.append("language","tr");fd.append("response_format","json");
+ fd.append("prompt",(CATS[S.cat]?CATS[S.cat].n+". ":"")+"geç, geri, yok, tamam, bitir");
+ const res=await fetch("https://api.groq.com/openai/v1/audio/transcriptions",{method:"POST",headers:{Authorization:"Bearer "+key},body:fd});
+ if(res.status===401){localStorage.removeItem("groq_key");throw new Error("Anahtar geçersiz")}
+ if(!res.ok)throw new Error("Groq hatası "+res.status);return ((await res.json()).text||"").trim()}
+async function hfHear(){const o=await hfRec();if(!o.spoke||H.skip||H.paused||!H.on)return o.spoke?"":null;try{return await hfSTT(o)}catch(e){hfStat("⚠️ "+e.message,"err");await hfSay("Bir hata oldu: "+e.message);return null}}
+const HF_NO=/^(yok|hayır|hayir|yok başka|başka yok|tamam|bu kadar|sıradaki|siradaki|devam|geçelim|o kadar)[.!]?$/i,HF_SKIP=/^(geç|gec|atla|pas|bilmiyorum|boş ver)[.!]?$/i,HF_BACK=/^(geri|önceki|geri dön)[.!]?$/i,HF_END=/^(bitir|bitti|prompt(u)? (oluştur|hazırla)|sonuca geç)[.!]?$/i;
+async function hfStart(){
+ let key="";try{key=localStorage.getItem("groq_key")||""}catch(e){}
+ if(!key){app.innerHTML=`<h1>Sesli soru-cevap</h1><p class="sub">Konuşmanı doğru yazıya çevirmek için ücretsiz Groq anahtarı gerekiyor (bir kerelik). console.groq.com → API Keys → Create API Key. Anahtar sadece bu telefonda saklanır.</p><input type="text" id="gki" placeholder="gsk_..." autocomplete="off" style="width:100%"><div class="row" style="margin-top:10px"><button class="btn acc" id="gks">Kaydet ve başla</button></div>`;
+  $("#gks").onclick=()=>{const v=$("#gki").value.trim();if(!/^gsk_/.test(v)){toast("Anahtar gsk_ ile başlamalı");return}localStorage.setItem("groq_key",v);hfStart()};return}
+ if(!window.MediaRecorder){toast("Bu tarayıcı ses kaydını desteklemiyor");return}
+ try{H.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch(e){toast("Mikrofon izni gerekli");return}
+ H.ac=new (window.AudioContext||window.webkitAudioContext)();await H.ac.resume();H.an=H.ac.createAnalyser();H.an.fftSize=2048;H.ac.createMediaStreamSource(H.stream).connect(H.an);
+ if(window.speechSynthesis){const u=new SpeechSynthesisUtterance(" ");u.lang="tr-TR";speechSynthesis.speak(u)}
+ H.on=true;H.paused=false;S.mode="detay";$("#nav").classList.add("hide");$("#restart").classList.remove("hide");hfUI();
+ if(!S.cat){$("#hq").textContent="Ne yapmak istiyorsun?";$("#hex").textContent=Object.values(CATS).map(c=>c.n).join(" · ");
+  for(;;){if(!H.on)return;await hfSay("Merhaba. Ne yapmak istiyorsun? Örneğin sunum, afiş, logo, site ya da video.");const t=await hfHear();if(t==null)continue;
+   const n=norm(t);const k=CATS[n]?n:Object.keys(CATKEY).find(c=>CATKEY[c].some(w=>n.includes(w)));
+   if(k){S.cat=k;S.v={};S.ch={};S.anlat="";S.images=[];S.links="";S.skills=new Set(CATS[k].skills.slice(0,3));if(["sunum","site","uygulama","afis","logo","oyun","dashboard"].includes(k))S.skills.add("frontend-design");break}
+   await hfSay("Anlayamadım, tekrar söyler misin?")}}
+ H.list=hfList(S.cat);H.i=0;await hfSay(CATS[S.cat].n+". Toplam "+H.list.length+" soru var. Geçmek istediğinde geç de.");hfLoop()}
+async function hfLoop(){if(H.busy)return;H.busy=true;
+ try{while(H.on&&!H.paused&&H.i<H.list.length){const it=H.list[H.i];H.skip=false;H.buf="";
+  $("#hprog").textContent=CATS[S.cat].i+" "+CATS[S.cat].n+" · Soru "+(H.i+1)+" / "+H.list.length;$("#hq").textContent=it.q.l;
+  $("#hex").textContent=it.q.o?it.q.o.join(" · "):it.q.t==="palette"?PALETS.map(p=>p.n).join(" · "):(it.q.p||"");$("#hans").textContent="";
+  await hfSay(hfText(it.q));let first=true,move=1;
+  for(;;){if(!H.on||H.paused){H.busy=false;return}
+   const t=await hfHear();if(H.skip){move=1;break}if(t==null){if(H.paused||!H.on){H.busy=false;return}await hfSay(first?"Seni duyamadım. Tekrar söyler misin? Atlamak için geç de.":"Başka eklemek istediğin var mı?");continue}
+   const c=t.replace(/[.,!?]+$/,"").trim();
+   if(HF_END.test(c)){hfApply(it);return hfFinish()}
+   if(HF_BACK.test(c)){move=-1;break}
+   if(first&&HF_SKIP.test(c)){move=1;break}
+   if(!first&&(HF_NO.test(c)||HF_SKIP.test(c))){move=1;break}
+   if(!c){continue}
+   H.buf=(H.buf?H.buf+" ":"")+t;$("#hans").textContent=H.buf;first=false;
+   await hfSay("Başka eklemek istediğin var mı?")}
+  hfApply(it);H.i=Math.max(0,H.i+move);save()}
+ if(H.on&&!H.paused&&H.i>=H.list.length){H.busy=false;await hfSay("Tamamdır, promptun hazır.");hfFinish()}}
+ finally{H.busy=false}}
+function hfApply(it){if(!H.buf)return;const q=it.q,t=H.buf;H.buf="";
+ if(q.t==="text"||q.t==="textarea"){S.v[it.key]=t;return}
+ const r=apply(q,it.key,t);if(r==null||/listede yoktu/.test(r||""))S.anlat=(S.anlat?S.anlat+"\n":"")+"- "+q.l.replace(/\?$/,"")+": "+t}
+function hfFinish(){H.on=false;H.paused=false;try{speechSynthesis.cancel()}catch(e){}if(H.stream)H.stream.getTracks().forEach(t=>t.stop());try{H.ac&&H.ac.close()}catch(e){}
+ if(!S.cat){home();return}S.siri=true;$("#nav").classList.remove("hide");result()}
 </script>
 </body>
 </html>
